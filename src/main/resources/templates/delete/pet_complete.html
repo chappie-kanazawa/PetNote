@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: base_header('Main',~{::link})">
+  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/js/app.js}">
+</head>
+<body>
+<div th:replace="layout :: header"></div>
+
+
+<p th:text="${petForm.petName} + ちゃんの追加・編集が完了しました。">ここにメッセージを表示</p>
+
+<div th:if="${param.add}">
+	<h1>ペット追加 完了</h1>
+	<p th:text="${petForm.petName} + ちゃんが追加されました。">ここにメッセージを表示</p>
+</div>
+
+<div th:if="${param.edit}">
+	<h1>ペット編集 完了</h1>
+	<p th:text="${petForm.petName} + ちゃんの編集が完了しました。">ここにメッセージを表示</p>
+</div>
+
+
+<div th:replace="layout :: footer"></div>
+
+</body>
+</html>

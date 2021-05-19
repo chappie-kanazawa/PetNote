@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: base_header(${title},~{::link})">
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+<link rel="stylesheet" th:href="@{/js/app.js}">
+</head>
+<body>
+	<div th:replace="layout :: header"></div>
+
+	<main>
+		<section id="account_edit">
+			<div class="py-4 container">
+
+				<h1 class="fw-light">アカウント情報更新</h1>
+				<form class="p-2" method="POST"
+					th:action="@{/account_edit_complete}" name="accountForm"
+					th:object="${accountForm}" enctype="multipart/form-data">
+
+					<div class="row g-3">
+						<div class="col-12">
+
+							<label class="form-label mt-4">ユーザー名(変更不可)</label> 
+							<input
+								class="form-control" type="hidden" name="userName"
+								th:value="*{userName}" required>
+							<p th:text="*{userName}">既存のユーザー名を表示</p>
+
+							<label for="inputPassword" class="form-label mt-4">パスワード</label>
+							<input type="password" id="inputPassword" class="form-control"
+								required name="pass" th:value="*{pass}">
+							<p class="invalid-feedback"
+								th:if="${#fields.hasErrors('pass')}" th:errors="*{pass}">エラーメッセージ</p>
+
+							<label class="form-label mt-4">アイコン画像</label> 
+							<img class="img-in-table"　th:src="@{*{icon}}"> 
+							<input
+								class="form-control" type="file" name="iconFile" th:value="*{iconFile}"
+								id="iconFile" />
+							<p class="invalid-feedback" th:if="${#fields.hasErrors('iconFile')}"
+								th:errors="*{iconFile}">エラーメッセージ</p>
+
+							<label class="form-label mt-4">自己紹介</label>
+							<textarea class="form-control" name="intro" id="intro" rows="3"
+								cols="40">[[${accountForm.intro}]]</textarea>
+							<p class="invalid-feedback" th:if="${#fields.hasErrors('intro')}"
+								th:errors="*{intro}">エラーメッセージ</p>
+
+							<!-- ユーザーID受け渡し -->
+							<input type="hidden" name="userId" th:value="*{userId}">
+
+							<button class="w-100 btn btn-primary btn-lg mt-4" type="submit">確定</button>
+
+						</div>
+					</div>
+				</form>
+
+			</div>
+		</section>
+	</main>
+
+
+	<div th:replace="layout :: footer"></div>
+
+</body>
+</html>

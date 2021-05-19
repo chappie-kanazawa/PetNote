@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: base_header(${title},~{::link})">
+  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/js/app.js}">
+</head>
+<body>
+<div th:replace="layout :: header"></div>
+
+	<p th:text="${accountForm.userName} + 縺輔ｓ縲√ｈ縺�縺薙◎">縺薙％縺ｫ繝｡繝�繧ｻ繝ｼ繧ｸ繧定｡ｨ遉ｺ</p>
+	<p th:text="${accountForm.userId}">縺薙％縺ｫ繝｡繝�繧ｻ繝ｼ繧ｸ繧定｡ｨ遉ｺ</p>
+
+
+	<form method="POST" th:action="@{/record_complete}" name="recForm" th:object="${recForm}" enctype="multipart/form-data" >
+
+		<label>繝壹ャ繝亥錐�ｼ�</label> 
+		<select id="petId" name="petId">
+			<!-- <option value="" selected>----</option> -->
+			<option th:each="pet : ${accountForm.petList}" th:value="${pet.petId}">
+				[[${pet.petName}]] : [[${pet.kind}]]
+			</option>
+		</select><br>
+		<p th:if="${#fields.hasErrors('petId')}" th:errors="*{petId}" style="color: red;">繧ｨ繝ｩ繝ｼ繝｡繝�繧ｻ繝ｼ繧ｸ</p>
+
+		<label>謌宣聞險倬鹸�ｼ�</label>
+		<textarea name="comment" id="comment" rows="3" cols="40" th:value="*{comment}"></textarea>
+		<br>
+		<p th:if="${#fields.hasErrors('comment')}" th:errors="*{comment}" style="color: red;">繧ｨ繝ｩ繝ｼ繝｡繝�繧ｻ繝ｼ繧ｸ</p>
+
+		<label>逕ｻ蜒擾ｼ�</label> 
+		<input type="file" name="recPic" th:value="*{recPic}" id="recPic"  /><br>
+		<p th:if="${#fields.hasErrors('recPic')}" th:errors="*{recPic}">繧ｨ繝ｩ繝ｼ繝｡繝�繧ｻ繝ｼ繧ｸ</p>
+
+		<label>險倬鹸譌･譎ゑｼ�</label> <input type="datetime-local" id="cal" required name="recDate" th:value="*{recDate}" /><br>
+		<div th:if="${#fields.hasErrors('recDate')}" th:errors="*{recDate}"></div>
+
+		<input type="submit" value="謚慕ｨｿ">
+
+	</form>
+
+<div th:replace="layout :: footer"></div>
+
+</body>
+</html>

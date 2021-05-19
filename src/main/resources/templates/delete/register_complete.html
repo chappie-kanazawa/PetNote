@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: base_header('Main',~{::link})">
+  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/js/app.js}">
+</head>
+<body>
+<div th:replace="layout :: header"></div>
+
+<div th:object="${accountForm}">
+	<p th:text="*{userName} + さん、ご登録ありがとうございました。">ここにメッセージを表示</p>
+</div>
+
+<p><a href="#" th:href="@{/login}">ログイン画面へ</a></p>
+
+<div th:replace="layout :: footer"></div>
+
+</body>
+</html>

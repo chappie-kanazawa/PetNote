@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: base_header('Main',~{::link})">
+  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/js/app.js}">
+</head>
+<body>
+<div th:replace="layout :: header"></div>
+
+	<p>成長記録の投稿が完了しました。</p>
+
+<div th:replace="layout :: footer"></div>
+
+</body>
+</html>

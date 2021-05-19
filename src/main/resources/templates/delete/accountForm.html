@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: base_header('Main',~{::link})">
+  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/js/app.js}">
+</head>
+<body>
+<div th:replace="layout :: header"></div>
+<!-- ↑　テンプレート　↑ -->
+
+<!--  -->
+<h1 th:text=${title}>text</h1>
+
+<th:block th:if="${param.userName_error}" style="color: red;">
+ 	既に使用されているユーザーIDです。
+</th:block>
+
+<form method="POST" th:action="@{/register_confirm}" name="accountForm" th:object="${accountForm}" enctype="multipart/form-data">
+ 
+	<!-- 新規登録の場合はユーザー名入力 -->
+	<th:block th:if="${param.task[0].equals('register')}">
+		<label>ユーザー名：</label>
+		<input type="text" name="userName" th:value="*{userName}" /><br>
+		<p th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}" style="color: red;">エラーメッセージ</p>
+	</th:block>
+	
+	 <!-- 編集の場合はユーザーを表示させるだけ（変更させない） -->
+	 <th:block th:if="${param.task[0].equals('edit')}">	
+		<label>ユーザー名：</label>
+		<p th:text="*{userName}">ここにメッセージを表示</p>
+		<input type="hidden" name="userName" th:value="*{userName}" /><br>
+	</th:block>
+	
+	<label>パスワード：</label>
+	<input type="text" name="pass" th:value="*{pass}" /><br>
+	<p th:if="${#fields.hasErrors('pass')}" th:errors="*{pass}" style="color: red;">エラーメッセージ</p>
+	
+	<label>アイコン画像：</label>
+	<input type="file" name="icon" th:value="*{icon}" /><br>
+	<p th:if="${#fields.hasErrors('icon')}" th:errors="*{icon}" style="color: red;">エラーメッセージ</p>
+	
+	<!-- 編集の場合は既に登録されている画像を表示 -->
+	<th:block th:if="${param.task[0].equals('edit')}">
+		<img th:src="@{*{iconPath}}" style="width: 200px"/>
+	</th:block>	
+	
+	<label>自己紹介：</label>
+	<textarea name="intro" id="intro" rows="3" cols="40" th:text="*{intro}"></textarea><br>
+	<p th:if="${#fields.hasErrors('intro')}" th:errors="*{intro}" style="color: red;">エラーメッセージ</p>
+	
+	<!-- 編集の場合は既存のuserIdをPOSTで受け渡し -->
+	<th:block th:if="${param.task[0].equals('edit')}">
+		<input type="hidden" name="userId" th:value="*{userId}">
+	</th:block>
+	
+	<input type="submit" value="内容確認">
+	
+</form>
+
+<!-- 新規登録の場合はTOPへ -->
+<th:block th:if="${param.task[0].equals('register')}">
+	<a href="#" th:href="@{/index}">TOPへ</a>
+</th:block>
+
+<!-- 編集の場合はマイページへ -->
+<th:block th:if="${param.task[0].equals('edit')}">
+	<a href="#" th:href="@{/mypage/{userName}(userName=${accountForm.userName})}">マイページへ</a>
+</th:block>
+
+
+<!-- ↓　テンプレート　↓ -->
+
+<div th:replace="layout :: footer"></div>
+
+</body>
+</html>

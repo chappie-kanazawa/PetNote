@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: base_header(${title},~{::link})">
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+<link rel="stylesheet" th:href="@{/js/app.js}">
+</head>
+<body>
+	<div th:replace="layout :: header"></div>
+
+	<main>
+		<section id="account_info">
+			<div class="py-4 container">
+
+				<h1 class="fw-light">アカウント情報確認</h1>
+
+				<div th:if="${param.edit_complete}" class="alert alert-primary"
+					role="alert">アカウント情報の更新が完了しました。</div>
+
+				<table class="table" th:object=${loginForm}>
+					<tbody>
+						<tr>
+							<th scope="row">ユーザー名</th>
+							<td th:text="*{userName}">ユーザー名を表示</td>
+						</tr>
+						<tr>
+							<th scope="row">パスワード</th>
+							<td th:text="*{pass}">パスワードを表示</td>
+						</tr>
+						<tr>
+							<th scope="row">アイコン画像</th>
+							<td><img class="img-in-table" th:src="@{*{icon}}"
+								alt="アイコン画像"></td>
+						</tr>
+						<tr>
+							<th scope="row">自己紹介</th>
+							<td th:text="*{intro}">自己紹介を表示</td>
+						</tr>
+
+					</tbody>
+				</table>
+
+				<a href="#"
+					th:href="@{/account_edit/{userName}(userName=${loginForm.userName})}">
+					<button type="submit" class="w-100 btn btn-primary btn-lg">アカウント情報を更新する</button>
+				</a>
+				
+				<a href="#" class="btn btn-sm btn-outline-secondary mt-2 me-1　w-100"
+					th:href="@{/mypage/{userName}(userName=${loginForm.userName})}">
+					マイページに戻る</a>
+
+			</div>
+		</section>
+	</main>
+
+	<div th:replace="layout :: footer"></div>
+
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: base_header(${title},~{::link})">
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+<link rel="stylesheet" th:href="@{/js/app.js}">
+</head>
+<body>
+	<div th:replace="layout :: header"></div>
+	<main>
+		<!-- ////////////////成長記録一覧表示/////////////// -->
+		<section class="pb-5" id="rec_list">
+
+			<div class="container" th:object=${petForm}>
+				<div class="mt-4">
+
+					<h4 class="fw-light mb-2" th:text="*{petName} + ちゃんの成長記録一覧"
+						th:id="'recList_' + *{petId}">ここにメッセージを表示</h4>
+
+					<p th:if="${#lists.isEmpty(petForm.recList)}">まだ成長記録は登録されていません。</p>
+
+
+					<div class="row row-cols-1 mt-3"
+						th:unless="${#lists.isEmpty(loginForm.petList)}">
+
+						<div class="col mb-4" th:each="rec : ${petForm.recList}">
+
+							<div class="card shadow-sm">
+
+								<div class="card-body">
+									<p class="card-text" th:text=${rec.recDate}>投稿日時表示</p>
+									<p class="card-text" th:text=${rec.comment}>成長記録表示</p>
+
+									<div
+										class="d-flex justify-content-between align-items-center float-end">
+										<div class="btn-group">
+
+											<form method="POST" th:action="@{/record_edit}"
+												name="recForm" th:object="${recForm}">
+												<input type="hidden" name="recId" th:value="${rec.recId}">
+												<input type="hidden" name="comment"
+													th:value="${rec.comment}"> <input type="hidden"
+													name="recPic" th:value="${rec.recPic}"> <input
+													type="hidden" name="recDate" th:value="${rec.recDate}">
+												<input type="hidden" name="petId"
+													th:value="${petForm.petId}"> <input type="hidden"
+													name="petName" th:value="${petForm.petName}">
+												<button type="submit"
+													class="btn btn-sm btn-outline-secondary mt-2 me-1">編集</button>
+											</form>
+
+											<form method="POST"
+												th:action="@{/record_delete_confirm/{recId}(recId=${rec.recId})}"
+												name="recForm" th:object="${recForm}">
+												<input type="hidden" name="recId" th:value="${rec.recId}">
+												<input type="hidden" name="recDate"
+													th:value="${rec.recDate}"> <input type="hidden"
+													name="petName" th:value="${petForm.petName}">
+												<button type="submit"
+													class="btn btn-sm btn-outline-secondary mt-2 me-1">削除</button>
+											</form>
+
+										</div>
+										<!-- end of buttons  -->
+
+									</div>
+									<!-- end of float-end  -->
+
+									<img th:src="@{${rec.recPic}}"
+										class="bd-placeholder-img card-img-top mt-3" />
+
+								</div>
+								<!-- end of card-body  -->
+
+							</div>
+							<!-- end of shadow-sm  -->
+
+						</div>
+						<!-- end of each:rec  -->
+
+
+						<a href="#" class="w-100 btn btn-primary btn-lg mt-3"
+							　th:href="@{/mypage/{userName}(userName=${loginForm.userName})}">
+							マイページに戻る</a>
+
+					</div>
+					<!-- end of 成長記録ボックス  -->
+					
+				</div>
+				<!-- end of mt-4 -->
+				
+			</div>
+			<!-- end of container -->
+
+		</section>
+
+	</main>
+
+	<div th:replace="layout :: footer"></div>
+
+</body>
+</html>

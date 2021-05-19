@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: base_header(${title},~{::link})">
+  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/js/app.js}">
+</head>
+<body>
+<div th:replace="layout :: header"></div>
+<main>
+	<section id="register_confirm">
+		<div class="py-4 container">
+
+			<h3 class="fw-light">お探しのページが存在しません。</h3>
+			<p><a class="lead text-muted" href="#" th:href="@{/mypage/{userName}(userName=${accountForm.userName})}">マイページへ</a></p>
+
+		</div>
+	</section>
+</main>
+
+<div th:replace="layout :: footer"></div>
+
+</body>
+</html>

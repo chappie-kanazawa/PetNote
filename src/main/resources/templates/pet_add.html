@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: base_header(${title},~{::link})">
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+<link rel="stylesheet" th:href="@{/js/app.js}">
+</head>
+<body>
+	<div th:replace="layout :: header"></div>
+
+	<main>
+		<section id="pet_add">
+			<div class="py-4 container">
+
+				<h1 class="fw-light">ペット追加</h1>
+
+				<form class="p-2" method="POST" th:action="@{/pet_confirm}"
+					name="petForm" th:object="${petForm}" enctype="multipart/form-data">
+
+					<div class="row g-3">
+						<div class="col-12">
+
+							<label class="form-label mt-4">お名前</label> 
+							<input
+								class="form-control" type="text" name="petName"
+								th:value="*{petName}" required>
+							<p class="invalid-feedback"
+								th:if="${#fields.hasErrors('petName')}" th:errors="*{petName}">エラーメッセージ</p>
+
+							<label class="form-label mt-4">種類</label> <input
+								class="form-control" type="text" name="kind" th:value="*{kind}" /><br>
+							<p class="invalid-feedback" th:if="${#fields.hasErrors('kind')}"
+								th:errors="*{kind}">エラーメッセージ</p>
+
+							<label class="form-label">性別</label> <select class="form-select"
+								name="gender" id="geder">
+								<option value="0" th:selected="*{gender} == 0">指定なし</option>
+								<option value="1" th:selected="*{gender} == 1">♂</option>
+								<option value="2" th:selected="*{gender} == 2">♀</option>
+							</select><br>
+							<p class="invalid-feedback"
+								th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}">エラーメッセージ</p>
+
+							<label class="form-label">写真</label> <input class="form-control"
+								type="file" name="petIconFile" th:field="*{petIconFile}" /><br>
+							<p class="invalid-feedback"
+								th:if="${#fields.hasErrors('petIcon')}" th:errors="*{petIcon}">エラーメッセージ</p>
+							<img class="img-in-table" th:src="@{*{petIcon}}"> <input
+								type="hidden" name="petIcon" th:field="*{petIcon}" />
+
+							<!-- ユーザーIDセット -->
+							<input type="hidden" name="userId" th:field="${loginForm.userId}" />
+
+							<button class="w-100 btn btn-primary btn-lg mt-4" type="submit">内容確認</button>
+
+						</div>
+					</div>
+				</form>
+			</div>
+		</section>
+	</main>
+
+
+
+	<div th:replace="layout :: footer"></div>
+
+</body>
+</html>
