@@ -162,7 +162,7 @@
 		</section>
 
 		<!-- ////////////////成長記録一覧表示/////////////// -->
-		<section class="py-5" id="rec_list">
+		<section class="py-5" id="rec_list" th:if="${!#lists.isEmpty(loginForm.petList)}">
 			<div class="container">
 
 				<h3 class="fw-light">

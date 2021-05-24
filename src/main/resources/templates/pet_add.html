@@ -44,14 +44,14 @@
 								th:errors="*{kind}">エラーメッセージ</p>
 
 							<label class="form-label">性別</label> 
-							<select class="form-select" name="gender" id="geder">
-								<option value="UNSPECIFIED" th:selected="*{gender} == 0">指定なし</option>
-								<option value="MALE" th:selected="*{gender} == 1">♂</option>
-								<option value="FEMALE" th:selected="*{gender} == 2">♀</option>
+							<select class="form-select" name="gender" id="gender">
+								<option value="0" th:selected="*{gender} == 0">指定なし</option>
+								<option value="1" th:selected="*{gender} == 1">♂</option>
+								<option value="2" th:selected="*{gender} == 2">♀</option>
 							</select><br>
 							<p class="invalid-feedback"
 								th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}">エラーメッセージ</p>
-
+ 
 							<label class="form-label">写真</label> 
 							<input class="form-control"
 								type="file" 
@@ -61,7 +61,10 @@
 							<p class="invalid-feedback"
 								th:if="${#fields.hasErrors('petIcon')}" 
 								th:errors="*{petIcon}">エラーメッセージ</p>
-							<img class="img-in-table" th:src="@{*{petIcon}}"> 
+							
+							<img th:if="*{!#strings.isEmpty(petIcon)}" 
+								class="img-in-table rounded mx-auto d-block mb-4"
+								th:src="@{*{petIcon}}" alt="ペット画像"> 
 
 							<!-- ユーザーIDをセット -->
 							<input type="hidden" name="userId" th:field="${loginForm.userId}" />

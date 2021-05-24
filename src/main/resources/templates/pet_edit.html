@@ -23,13 +23,15 @@
 					<div class="row g-3">
 						<div class="col-12">
 
-							<label class="form-label mt-4">お名前</label> <input
-								class="form-control" type="text" name="petName"
+							<label class="form-label mt-4">お名前</label> 
+							<input class="form-control" type="text" name="petName" 
 								th:value="*{petName}" required>
 							<p class="invalid-feedback"
-								th:if="${#fields.hasErrors('petName')}" th:errors="*{petName}">エラーメッセージ</p>
+								th:if="${#fields.hasErrors('petName')}" th:errors="*{petName}">
+								エラーメッセージ</p>
 
-							<label class="form-label mt-4">種類</label> <input
+							<label class="form-label mt-4">種類</label> 
+							<input
 								class="form-control" type="text" name="kind" th:value="*{kind}" /><br>
 							<p class="invalid-feedback" th:if="${#fields.hasErrors('kind')}"
 								th:errors="*{kind}">エラーメッセージ</p>
@@ -41,19 +43,25 @@
 								<option value="2" th:selected="*{gender.equals(2)}">♀</option>
 							</select><br>
 							<p class="invalid-feedback"
-								th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}">エラーメッセージ</p>
+								th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}">
+								エラーメッセージ</p>
 
-							<label class="form-label">写真</label> <input class="form-control"
-								type="file" name="petIconFile" th:field="*{petIconFile}" /><br>
+							<label class="form-label">写真</label> 
+							<p>※変更する場合は選択してください。</p>
+							<input class="form-control"
+								type="file" name="petIconFile" th:field="*{petIconFile}" id="petIconFile" />
 							<p class="invalid-feedback"
-								th:if="${#fields.hasErrors('petIcon')}" th:errors="*{petIcon}">エラーメッセージ</p>
+								th:if="${#fields.hasErrors('petIcon')}" th:errors="*{petIcon}">
+								エラーメッセージ</p>
+								
+							<label class="form-label mt-4">（現在の写真）</label> 
 							<img class="img-in-table rounded mx-auto d-block mb-4"
-								th:src="@{*{petIcon}}" alt="ペット画像"> <input type="hidden"
-								name="petIcon" th:field="*{petIcon}" />
+								th:src="@{*{petIcon}}" alt="ペット画像"> 
+							<input type="hidden" name="petIcon" th:field="*{petIcon}" />
 
 							<!-- ユーザーID、ペットIDはそのまま送信 -->
-							<input type="hidden" name="petId" th:value="*{petId}"> <input
-								type="hidden" name="userId" th:value="*{userId}">
+							<input type="hidden" name="petId" th:value="*{petId}"> 
+							<input　type="hidden" name="userId" th:value="*{userId}">
 
 							<button class="w-100 btn btn-primary btn-lg mt-4" type="submit">確定</button>
 						</div>

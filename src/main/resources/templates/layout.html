@@ -110,33 +110,35 @@
 				<img class="me-1 mb-1" th:src="@{/images/logo_white.svg}" alt="" width="32" >
 				PetNote
 			</a>
-			<button class="navbar-toggler" type="button"
-				data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
-				aria-controls="navbarCollapse" aria-expanded="false"
-				aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse" id="navbarCollapse"
-				th:if="${menuView}">
-
-				<ul class="navbar-nav me-auto mb-2 mb-md-0">
-					<li class="nav-item active">
-						<a class="nav-link" aria-current="page" href="#"
-							th:href="@{/mypage/{userName}(userName=${loginForm.userName})}">
-							マイページ</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="#"
-						th:href="@{/account_info/{userName}(userName=${loginForm.userName})}">
-							アカウント情報</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="#"
-						th:href="@{/logout}"> ログアウト</a>
-					</li>
-
+			<th:block th:if="${menuView}">
+				<button class="navbar-toggler" type="button"
+					data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+					aria-controls="navbarCollapse" aria-expanded="false"
+					aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarCollapse">
+	
+					<ul class="navbar-nav me-auto mb-2 mb-md-0">
+						<li class="nav-item active">
+							<a class="nav-link" aria-current="page" href="#"
+								th:href="@{/mypage/{userName}(userName=${loginForm.userName})}">
+								マイページ</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="#"
+							th:href="@{/account_info/{userName}(userName=${loginForm.userName})}">
+								アカウント情報</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="#"
+							th:href="@{/logout}"> ログアウト</a>
+						</li>
+					</ul>
+	
+				</div>
 			</div>
-		</div>
+		</th:block>
 	</nav>
 </header>
 

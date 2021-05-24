@@ -95,18 +95,19 @@ public class PetNoteController {
 	// 画像アップロード
 	/////////////////////
 
-	private String getExtension(String filename) {
-		int dot = filename.lastIndexOf(".");
-		if (dot > 0) {
-			return filename.substring(dot).toLowerCase();
-		}
-		return "";
-	}
+//	private String getExtension(String filename) {
+//		int dot = filename.lastIndexOf(".");
+//		if (dot > 0) {
+//			return filename.substring(dot).toLowerCase();
+//		}
+//		return "";
+//	}
 
 	private String getUploadFileName(String fileName) {
 
-		return fileName + "_" + DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS").format(LocalDateTime.now())
-				+ getExtension(fileName);
+		return DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS").format(LocalDateTime.now())
+				//+ getExtension(fileName)
+				+ "_" + fileName;
 	}
 
 	// 画像の分類用にcatNameを取得しフォルダ作成、既にフォルダがある場合は何もしない
@@ -344,7 +345,7 @@ public class PetNoteController {
 			//画像を保存 ファイル名filePath で画像を保存,　空の場合はダミー画像
 			String filePath;
 			if ( accountForm.getIconFile().isEmpty() ) {
-				filePath = "images/dummy.jpg";
+				filePath = "/images/dummy.jpg";
 			} else {
 				filePath = saveAndGetFilePath(accountForm.getIconFile(), "account");
 			}
@@ -370,6 +371,9 @@ public class PetNoteController {
 		account.setPass(accountForm.getPass());
 		account.setIcon(accountForm.getIcon());
 		account.setIntro(accountForm.getIntro());
+		
+    	//取得したaccount情報をaccountFormにコピー
+//    	BeanUtils.copyProperties(accountForm, account);
 
 		// DBにaccountを登録
 		accountService.registerAccount(account);
@@ -486,8 +490,8 @@ public class PetNoteController {
     
 	@RequestMapping(value = "/pet_add")
 	public String goAddPet(
-			LoginForm loginForm,
 			PetForm petForm, 
+			LoginForm loginForm,
 			Model model
 			)  {
 		
@@ -518,14 +522,14 @@ public class PetNoteController {
     	}
     	
 		//画像を保存 ファイル名filePath で画像を保存,　空の場合はダミー画像
-		String petIconPath;
+		String filePath;
 		if ( petForm.getPetIconFile().isEmpty() ) {
-			petIconPath = "images/dummy.jpg";
+			filePath = "/images/dummy.jpg";
 		} else {
-			petIconPath = saveAndGetFilePath(petForm.getPetIconFile(), "pet");
+			filePath = saveAndGetFilePath(petForm.getPetIconFile(), "pet");
 		}
 
-		petForm.setPetIcon(petIconPath);
+		petForm.setPetIcon(filePath);
 		model.addAttribute("petForm", petForm);
 
 		model.addAttribute("menuView", true);
@@ -573,10 +577,12 @@ public class PetNoteController {
 			PetForm petForm, 
 			Model model
     		) {
+    	
     	if( loginForm.getPass() != null ) {
 			model.addAttribute("menuView", true);
 	    	model.addAttribute("title", "ペット情報編集");
 	    	return "pet_edit";
+	    	
 		} else {
 	    	model.addAttribute("title", "エラー");
     		return "index";
@@ -598,23 +604,17 @@ public class PetNoteController {
 			model.addAttribute("title", "ペット情報編集");
 			return "pet_edit";
 		}
-    	
-		//filePathに既存の画像のパスを代入
-		String filePath =  petForm.getPetIcon();
-    	
-		//画像を保存 ファイル名filePath で画像を保存
-		if (petForm.getPetIcon() != null) {
-			filePath = saveAndGetFilePath(petForm.getPetIconFile(), "pet");			
-		}
-        
-        //入力されたPetForm を petに詰めなおす
+		
+    	// セッションスコープpetFormをpetにつめなおす
     	Pet pet = new Pet();
-    	pet.setPetId(petForm.getPetId());
-    	pet.setPetName(petForm.getPetName());
-    	pet.setKind(petForm.getKind());
-    	pet.setGender(petForm.getGender());
-    	pet.setPetIcon(filePath);
-    	pet.setUserId(petForm.getUserId());
+    	BeanUtils.copyProperties(petForm, pet);
+    	
+		//画像の変更があった場合は、新しい画像を保存し、ファイル名パス filePath をpetに上書き
+		if ( petForm.getPetIconFile() != null ) {
+	    	String filePath;
+			filePath = saveAndGetFilePath(petForm.getPetIconFile(), "pet");
+			pet.setPetIcon(filePath);
+		}
 
     	//DBにpetを登録
 		petService.editPet(pet);
