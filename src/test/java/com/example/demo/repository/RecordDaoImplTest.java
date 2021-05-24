@@ -149,28 +149,32 @@ class RecordDaoImplTest {
     @Test
     @DisplayName("updateのテスト(正常系)")
     void update1() {
+    	
+        var rec1 = recordDao.findByRecId(5);
+        assertEquals("一緒に散歩したてすと", rec1.getComment());
+    	
         var rec = new Record();
-        rec.setRecId(3);
-        rec.setComment("よく食べたてすとx");
-        rec.setRecPic("ddddtestx");
+        rec.setRecId(5);
+        rec.setComment("一緒に散歩したてすとxxx");
+        rec.setRecPic("ggggtestzzzz");
         rec.setRecDate(LocalDateTime.of(2007, 12, 03, 10, 15, 30));
-        rec.setPetId(3);
+        rec.setPetId(2);
 
         var updateCount = recordDao.update(rec);
 
         assertEquals(1, updateCount);
 
-        var rec2 = recordDao.findByRecId(3);
+        var rec2 = recordDao.findByRecId(5);
 
         // レコードの存在チェック
         assertNotNull(rec2);
 
         // 各カラムの値が正しくセットされているか
-        assertEquals(3, rec2.getRecId());
-        assertEquals("よく食べたてすとx", rec2.getComment());
-        assertEquals("ddddtestx", rec2.getRecPic());
+        assertEquals(5, rec2.getRecId());
+        assertEquals("一緒に散歩したてすとxxx", rec2.getComment());
+        assertEquals("ggggtestzzzz", rec2.getRecPic());
         assertEquals(LocalDateTime.of(2007, 12, 03, 10, 15, 30), rec2.getRecDate());
-        assertEquals(3, rec2.getPetId());
+        assertEquals(2, rec2.getPetId());
     }
 
     @Test

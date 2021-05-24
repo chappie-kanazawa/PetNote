@@ -13,10 +13,14 @@
 
 				<h1 class="fw-light">成長記録編集</h1>
 				<a href="#" class="btn btn-sm btn-outline-secondary mt-2 me-1"
+					th:href="@{/mypage/{userName}(userName=${loginForm.userName})}">
+					マイページに戻る</a>
+					
+				<!-- <a href="#" class="btn btn-sm btn-outline-secondary mt-2 me-1"
 					th:href="@{/record_list/{petId}/{petName}(petId=${recForm.petId},petName=${recForm.petName})}"
-					th:text="${recForm.petName} + ちゃんの成長記録一覧に戻る"></a>
+					th:text="${recForm.petName} + ちゃんの成長記録一覧に戻る"></a> -->
 
-				<form class="p-2" method="POST" th:action="@{/record_complete}"
+				<form class="p-2" method="POST" th:action="@{/record_edit_complete}"
 					name="recForm" th:object="${recForm}" enctype="multipart/form-data">
 
 					<div class="row g-3">
@@ -24,10 +28,10 @@
 						<div class="col-sm-6">
 							<label class="form-label">対象ペット</label> <select
 								class="form-select" id="petId" name="petId" required>
-								<option value="" selected>----</option>
 								<option th:each="pet : ${loginForm.petList}"
-									th:value="${pet.petId}">[[${pet.petName}]] :
-									[[${pet.kind}]]</option>
+									th:value="${pet.petId}"
+									th:selected="${pet.petId.equals(recForm.petId)}">
+									[[${pet.petName}]] : [[${pet.kind}]]</option>
 							</select><br>
 							<p th:if="${#fields.hasErrors('petId')}" th:errors="*{petId}"
 								style="color: red;">エラーメッセージ</p>

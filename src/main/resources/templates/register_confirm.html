@@ -36,7 +36,7 @@
 			</table>
 
 
-			<form class="col-sm-5 float-start" th:action="@{/register}" method="POST" name="accountForm" th:object="${accountForm}">
+			<form th:action="@{/register}" method="POST" name="accountForm" th:object="${accountForm}">
 				<div>
 					<input type="hidden" name="userName" th:value="*{userName}">
 					<input type="hidden" name="pass" th:value="*{pass}">
@@ -46,7 +46,7 @@
 			 	</div>
 			 </form>
 			 
-			 <form class="col-sm-5 float-end" th:action="@{/register_complete}" method="POST" name="accountForm" th:object="${accountForm}">
+			 <form th:action="@{/register_complete}" method="POST" name="accountForm" th:object="${accountForm}">
 				<div>
 					<input type="hidden" name="userName" th:value="*{userName}">
 					<input type="hidden" name="pass" th:value="*{pass}">

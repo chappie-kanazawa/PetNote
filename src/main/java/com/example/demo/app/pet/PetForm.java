@@ -27,11 +27,10 @@ public class PetForm {
     @Size(min = 1, max = 20, message = "20文字以内で入力してください。")
     private String kind;
     
-    @Digits(integer = 1, fraction = 0)
     private int gender;
     
     private MultipartFile petIconFile;
-    
+   
     private String petIcon;
     
     @NotNull

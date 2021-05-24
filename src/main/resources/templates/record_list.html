@@ -27,7 +27,7 @@
 							<div class="card shadow-sm">
 
 								<div class="card-body">
-									<p class="card-text" th:text=${rec.recDate}>投稿日時表示</p>
+									<p class="card-text" th:text="${#temporals.format(rec.recDate, 'yyyy/MM/dd(E) HH:mm:ss')}">投稿日時表示</p>
 									<p class="card-text" th:text=${rec.comment}>成長記録表示</p>
 
 									<div

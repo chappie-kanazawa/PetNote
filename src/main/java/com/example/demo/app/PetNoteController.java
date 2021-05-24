@@ -184,7 +184,9 @@ public class PetNoteController {
 	//TOPへ戻る
 	/////////////////////
 	@RequestMapping("/")
-	public String goIndex(Model model) {
+	public String goIndex(
+			Model model
+			) {
 		model.addAttribute("title", "ようこそ");
 		return "index";
 	}
@@ -202,15 +204,15 @@ public class PetNoteController {
 	/////////////////////
 	@RequestMapping("/login")
 	public String goLogin(
-			LoginForm loginForm,
 			Model model
 			) {
-//		model.addAttribute("loginForm", loginForm);
-//		if (Objects.isNull(loginForm.getUserName())) {		
+		//model.addAttribute("loginForm", loginForm);
+//		if ( loginForm.getPass() == null ) {
 			model.addAttribute("title", "ログイン");
 			return "login";
+
 //		} else {
-//			model.addAttribute("title", "エラー");
+//			model.addAttribute("title", "エラー:既にログインしています");
 //			return "redirect:/error?loggedin_already";
 //		}
 	}
@@ -243,6 +245,7 @@ public class PetNoteController {
             //accountFormをセッションにセット
         	model.addAttribute("loginForm", loginForm);
         	
+        	model.addAttribute("menuView", true);
         	model.addAttribute("title", "マイページ");
             return "redirect:/mypage/" + userName;
             
@@ -261,9 +264,19 @@ public class PetNoteController {
     		@PathVariable("userName") String userName,
     		LoginForm loginForm,
     		Model model) {
-
-    	model.addAttribute("title", "マイページ");
-    	return "mypage";
+    	
+    	if(loginForm.getPass() != null) {
+	    	LocalDateTime dt = LocalDateTime.now();
+	    	dt = dt.of(dt.getYear(), dt.getMonth(), dt.getDayOfMonth(), dt.getHour(), dt.getMinute(), dt.getSecond());
+	    	
+	    	model.addAttribute("now", dt);
+	    	model.addAttribute("menuView", true);
+	    	model.addAttribute("title", "マイページ");
+	    	return "mypage";
+    	} else {
+	    	model.addAttribute("title", "エラー");
+    		return "redirect:/error?login_required";
+    	}
     }
 
     /////////////////////
@@ -274,9 +287,12 @@ public class PetNoteController {
     public String goLogout(
     		LoginForm loginForm,
     		PetForm petForm,
-    		SessionStatus sassionStatus) {
+    		SessionStatus sassionStatus,
+    		Model model) {
     	
     	sassionStatus.setComplete();
+    	
+    	model.addAttribute("title", "ようこそ");
     	return "redirect:/index?logout";
     }
     
@@ -290,15 +306,17 @@ public class PetNoteController {
 	@RequestMapping(value="/register")
 	public String registerAccount(
 			AccountForm accountForm,
+			LoginForm loginForm,
 			Model model
 			) {
-//		if (Objects.isNull(loginForm.getUserName())) {
+//		if (loginForm.getPass().isEmpty()) {
 			//アカウント新規登録
 			model.addAttribute("accountForm", accountForm);
+			
 			model.addAttribute("title", "アカウント登録");
 			return "register";
 //		} else {
-//			model.addAttribute("title", "エラー");
+//			model.addAttribute("title", "エラー：既にログインしています");
 //			return "redirect:/error?loggedin_already";
 //		}
 		
@@ -313,16 +331,24 @@ public class PetNoteController {
 		
 		// エラーがある場合、自画面遷移する
     	if (resultAccount.hasErrors()) {
+			model.addAttribute("title", "アカウント登録");
     		return "register";
     	}		
     	
     	//アカウント名重複確認
 		if (accountService.isExist(accountForm.getUserName())) {
+			model.addAttribute("title", "アカウント登録");
 			return "redirect:/register?userName_error";
 		} else {
-		
-			//画像を保存 ファイル名filePath で画像を保存
-			String filePath = saveAndGetFilePath(accountForm.getIconFile(), "account");
+			
+			//画像を保存 ファイル名filePath で画像を保存,　空の場合はダミー画像
+			String filePath;
+			if ( accountForm.getIconFile().isEmpty() ) {
+				filePath = "images/dummy.jpg";
+			} else {
+				filePath = saveAndGetFilePath(accountForm.getIconFile(), "account");
+			}
+	
 			accountForm.setIcon(filePath);
 			model.addAttribute("accountForm", accountForm);
 			
@@ -360,24 +386,20 @@ public class PetNoteController {
 	public String viewAccountInfo(
 			@PathVariable(name = "userName") String userName, 
 			AccountForm accountForm,
+			LoginForm loginForm,
 			Model model
 			) {
-
-		//ユーザーIDからアカウント情報を取得
-		Account account = accountService.findByUserName(userName);
 		
-		//取得したアカウント情報をaccountFormに詰めなおす
-		accountForm.setUserId(account.getUserId());
-		accountForm.setUserName(account.getUserName());
-		accountForm.setPass(account.getPass());
-		accountForm.setIcon(account.getIcon());
-		accountForm.setIntro(account.getIntro());
-
-		//詰めなおしたloginFormをセッションスコープ(model)にセットする
-		model.addAttribute("accountForm", accountForm);
-
-		model.addAttribute("title", "アカウント情報確認");
-		return "account_info";
+		if(loginForm.getPass() != null) {
+	
+			model.addAttribute("menuView", true);
+			model.addAttribute("title", "アカウント情報確認");
+			return "account_info";
+			
+		} else {
+			model.addAttribute("title", "エラー");
+			return "redirect:/error?login_required";
+		}
 	}
 
 	/////////////////////
@@ -387,11 +409,15 @@ public class PetNoteController {
 	public String editAccount(
 			@PathVariable("userName") String userName,
 			AccountForm accountForm,
+			LoginForm loginForm,
 			Model model
 			) {
-		
+
+		if(loginForm.getPass() != null) {
+			
 			//userNameのaccount情報を見つける
-			Account account = accountService.findByUserName(userName);
+			Account account = new Account();
+			account = accountService.findByUserName(userName);
 			
 	    	//取得したaccount情報をaccountFormにコピー
 	    	BeanUtils.copyProperties(account, accountForm);
@@ -399,36 +425,42 @@ public class PetNoteController {
 			//詰めなおしたaccountFormをセッション(model)にセットする
 			model.addAttribute("accountForm", accountForm);
 			
+			model.addAttribute("menuView", true);
 			model.addAttribute("title", "アカウント情報編集");
 			return "account_edit";
+			
+		} else {
+			model.addAttribute("title", "エラー");
+			return "redirect:/error?login_required";
+		}
 		
 	}
 	
     @RequestMapping(value="/account_edit_complete", method = RequestMethod.POST)
     public String completeEditAccount(
-			@Valid @ModelAttribute("accountForm") AccountForm accountForm, 
+			@Validated @ModelAttribute("accountForm") AccountForm accountForm, 
 			BindingResult resultAccount,
 			LoginForm loginForm,
-			Model model,
-			SessionStatus sassionStatus
+			Model model
     		) {
     	
 		// エラーがある場合、自画面遷移する
     	if (resultAccount.hasErrors()) {
+    		model.addAttribute("menuView", true);
     		model.addAttribute("title", "アカウント情報編集");
     		return "account_edit";
     	}
     	
-		//画像を保存 ファイル名fileName で画像を保存
-		String iconPath = saveAndGetFilePath(accountForm.getIconFile(), "account");
-    	
     	// セッションスコープaccountFormをaccountにつめなおす
     	Account account = new Account();
-    	account.setUserId(accountForm.getUserId());
-    	account.setUserName(accountForm.getUserName());
-    	account.setPass(accountForm.getPass());
-    	account.setIcon(iconPath);
-    	account.setIntro(accountForm.getIntro());
+    	BeanUtils.copyProperties(accountForm, account);
+    	
+		//画像の変更があった場合は、新しい画像を保存し、ファイル名パス filePath をaccountに上書き
+		if ( accountForm.getIconFile() != null ) {
+	    	String filePath;
+			filePath = saveAndGetFilePath(accountForm.getIconFile(), "account");
+			account.setIcon(filePath);
+		}
 
     	// 変更したaccount情報をDBに上書き実行
     	accountService.editAccount(account);
@@ -437,7 +469,8 @@ public class PetNoteController {
     	LoginForm newLoginForm = new LoginForm();
     	newLoginForm = newLoginForm(loginForm.getUserName());
     	model.addAttribute("loginForm", newLoginForm);
-    	
+
+		model.addAttribute("menuView", true);
     	model.addAttribute("title", "アカウント情報確認");
     	//url用にuserIdを取得
     	String userName = loginForm.getUserName();
@@ -457,8 +490,16 @@ public class PetNoteController {
 			PetForm petForm, 
 			Model model
 			)  {
-		model.addAttribute("title", "ペット追加");
-		return "pet_add";
+		
+		if(loginForm.getPass() != null) {
+			model.addAttribute("menuView", true);
+			model.addAttribute("title", "ペット追加");
+			return "pet_add";
+    	} else {
+	    	model.addAttribute("title", "エラー");
+    		return "redirect:/error?login_required";
+    	}
+		
 	}
  
     @RequestMapping(value = "/pet_confirm", method = RequestMethod.POST)
@@ -471,15 +512,23 @@ public class PetNoteController {
     	
     	// エラーがある場合、自画面遷移する
     	if (resultPet.hasErrors()) {
+    		model.addAttribute("menuView", true);
     		model.addAttribute("title", "ペット追加");
     		return "pet_add";
     	}
     	
-		//画像を保存 ファイル名fileName で画像を保存
-		String petIconPath = saveAndGetFilePath(petForm.getPetIconFile(), "pet");
+		//画像を保存 ファイル名filePath で画像を保存,　空の場合はダミー画像
+		String petIconPath;
+		if ( petForm.getPetIconFile().isEmpty() ) {
+			petIconPath = "images/dummy.jpg";
+		} else {
+			petIconPath = saveAndGetFilePath(petForm.getPetIconFile(), "pet");
+		}
+
 		petForm.setPetIcon(petIconPath);
 		model.addAttribute("petForm", petForm);
 
+		model.addAttribute("menuView", true);
 		model.addAttribute("title", "入力内容確認");
     	return "pet_confirm";
 
@@ -489,8 +538,7 @@ public class PetNoteController {
     public String completeAddPet(
     		PetForm petForm, 
     		LoginForm loginForm,
-    		Model model,
-    		SessionStatus sassionStatus
+    		Model model
     		) {
         
         //入力されたPetForm を petに詰めなおす
@@ -509,19 +557,11 @@ public class PetNoteController {
     	newLoginForm = newLoginForm(loginForm.getUserName());
     	model.addAttribute("loginForm", newLoginForm);
     	
+		model.addAttribute("menuView", true);
 		model.addAttribute("title", "ペット追加完了");
 		return "complete";
     }
     
-    @RequestMapping(value = "/pet_add", method = RequestMethod.POST)
-    public String completeAddPet(
-    		LoginForm loginForm,
-    		PetForm petForm, 
-    		Model model
-    		) {
-    	model.addAttribute("title", "ペット追加");
-		return "pet_add";
-    }
     
     /////////////////////
 	//　ペット編集
@@ -533,8 +573,15 @@ public class PetNoteController {
 			PetForm petForm, 
 			Model model
     		) {
-    	model.addAttribute("title", "ペット情報編集");
-    	return "pet_edit";
+    	if( loginForm.getPass() != null ) {
+			model.addAttribute("menuView", true);
+	    	model.addAttribute("title", "ペット情報編集");
+	    	return "pet_edit";
+		} else {
+	    	model.addAttribute("title", "エラー");
+    		return "index";
+		}
+		
     }
     
     @RequestMapping(value = "/pet_edit_complete", method = RequestMethod.POST)
@@ -547,6 +594,7 @@ public class PetNoteController {
     	
 		// エラーがある場合、自画面遷移する
 		if (result.hasErrors()) {
+    		model.addAttribute("menuView", true);
 			model.addAttribute("title", "ペット情報編集");
 			return "pet_edit";
 		}
@@ -576,6 +624,7 @@ public class PetNoteController {
     	newLoginForm = newLoginForm(loginForm.getUserName());
     	model.addAttribute("loginForm", newLoginForm);
 
+		model.addAttribute("menuView", true);
 		model.addAttribute("title", "ペット追加完了");
 		return "complete";
     }
@@ -594,6 +643,7 @@ public class PetNoteController {
     	
         model.addAttribute("petForm", petForm);
     	
+		model.addAttribute("menuView", true);
         model.addAttribute("title", "ペット削除確認");
     	return "pet_delete_confirm";
     }
@@ -602,9 +652,8 @@ public class PetNoteController {
     public String deletePetComplete(
     		LoginForm loginForm,
     		@Validated @ModelAttribute("petForm") PetForm petForm, 
-    		BindingResult result, 
-    		Model model,
-    		SessionStatus sassionStatus
+    		BindingResult result,
+    		Model model
     		) {
         
         //入力されたPetFormから削除するpetIdを取り出す
@@ -621,6 +670,7 @@ public class PetNoteController {
     	newLoginForm = newLoginForm(loginForm.getUserName());
     	model.addAttribute("loginForm", newLoginForm);
 
+		model.addAttribute("menuView", true);
 		model.addAttribute("title", "ペット削除完了");
 		return "complete";
     }
@@ -639,15 +689,23 @@ public class PetNoteController {
     		Model model
     		) {
 
-    	List<Record> recList = recordService.findByPetId(petId);
+		if(loginForm.getPass() != null) {
     	
-    	petForm.setRecList(recList);
-    	petForm.setPetId(petId);
-    	petForm.setPetName(petName);
-    	model.addAttribute("petForm", petForm);
-    
-    	model.addAttribute("title", "成長記録一覧");
-    	return "record_list";
+	    	List<Record> recList = recordService.findByPetId(petId);
+	    	
+	    	petForm.setRecList(recList);
+	    	petForm.setPetId(petId);
+	    	petForm.setPetName(petName);
+	    	model.addAttribute("petForm", petForm);
+	    
+			model.addAttribute("menuView", true);
+	    	model.addAttribute("title", "成長記録一覧");
+	    	return "record_list";
+		} else {
+			model.addAttribute("title", "エラー");
+			return "redirect:/error?login_required";
+			
+		}
     }
     
 	/////////////////////
@@ -664,10 +722,15 @@ public class PetNoteController {
 
 		// エラーがある場合、自画面遷移する
 		if (resultRec.hasErrors()) {
+    		model.addAttribute("menuView", true);
 			model.addAttribute("title", "マイページ");
 			return "mypage";
 		}
-
+		
+		//String→LocalDateTimeに日付フォーマットを修正
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+		LocalDateTime formattedDate = LocalDateTime.parse(recForm.getRecDate());
+		
 		//画像を保存 ファイル名fileName で画像を保存
 		String recPicPath = saveAndGetFilePath(recForm.getRecPicFile(), "rec");
 		recForm.setRecPic(recPicPath);
@@ -676,9 +739,9 @@ public class PetNoteController {
         //入力されたRecForm を recordに詰めなおす
     	Record record = new Record();
     	record.setComment(recForm.getComment());
+    	record.setRecDate(formattedDate);
     	record.setRecPic(recPicPath);
-    	record.setRecDate(recForm.getRecDate());
-    	record.setPetId(recForm.getPetId());
+    	record.setPetId(recForm.getPetId());		
     	
     	//DBにrecordを登録
 		recordService.postRecord(record);
@@ -688,6 +751,7 @@ public class PetNoteController {
     	newLoginForm = newLoginForm(loginForm.getUserName());
     	model.addAttribute("loginForm", newLoginForm);
 
+		model.addAttribute("menuView", true);
 		model.addAttribute("title", "成長記録投稿完了");
 		return "complete";
 
@@ -700,17 +764,18 @@ public class PetNoteController {
 	/////////////////////
     
     @RequestMapping(value = "/record_edit", method = RequestMethod.POST)
-    public String editRecordForm(
+    public String editRecForm(
     		LoginForm loginForm,
-    		RecForm recForm,
-    		Model model
+			RecForm recForm, 
+			Model model
     		) {
+		model.addAttribute("menuView", true);
     	model.addAttribute("title", "成長記録編集");
     	return "record_edit";
     }
     
     @RequestMapping(value = "/record_edit_complete", method = RequestMethod.POST)
-    public String completeEditPetForm(
+    public String completeEditRecForm(
     		LoginForm loginForm,
     		@Validated @ModelAttribute("recForm") RecForm recForm, 
     		BindingResult result, 
@@ -719,9 +784,14 @@ public class PetNoteController {
     	
 		// エラーがある場合、自画面遷移する
 		if (result.hasErrors()) {
+    		model.addAttribute("menuView", true);
 			model.addAttribute("title", "成長記録編集");
 			return "record_edit";
 		}
+		
+		//String→LocalDateTimeに日付フォーマットを修正
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+		LocalDateTime formattedDate = LocalDateTime.parse(recForm.getRecDate());
     	
 		//filePathに既存の画像のパスを代入
 		String filePath =  recForm.getRecPic();
@@ -733,22 +803,22 @@ public class PetNoteController {
         
         //入力されたRecForm を recordに詰めなおす
     	Record record = new Record();
-    	
+    	record.setPetId(recForm.getPetId());
+    	record.setRecDate(formattedDate);
     	record.setComment(recForm.getComment());
     	record.setRecPic(filePath);
-    	record.setRecDate(recForm.getRecDate());
-    	record.setPetId(recForm.getPetId());
     	record.setRecId(recForm.getRecId());
 
     	//DBにpetを登録
     	recordService.editRecord(record);
-    	
-    	//セッションに入っているaccountFormを最新のnewAccountFormに更新
-    	LoginForm newLoginForm = new LoginForm();
+		
+    	//セッションに入っているloginFormを最新のloginFormに更新
+		LoginForm newLoginForm = new LoginForm();
     	newLoginForm = newLoginForm(loginForm.getUserName());
     	model.addAttribute("loginForm", newLoginForm);
 
-    	model.addAttribute("title", "成長記録編集完了");
+		model.addAttribute("menuView", true);
+		model.addAttribute("title", "成長記録編集完了");
 		return "complete";
     }
     
@@ -762,9 +832,15 @@ public class PetNoteController {
 			@PathVariable("recId") int recId,
 			Model model
 			) {
-
-		model.addAttribute("title", "成長記録削除確認");
-		return "record_delete_confirm";
+		if(loginForm.getPass() != null) {
+			model.addAttribute("menuView", true);
+			model.addAttribute("title", "成長記録削除確認");
+			return "record_delete_confirm";
+		} else {
+			model.addAttribute("title", "エラー");
+			return "redirect:/error?login_required";
+			
+		}
 	}
 
 
@@ -777,17 +853,27 @@ public class PetNoteController {
 			RecForm recForm,
 			Model model
 			) {
-
-		//成長記録を削除
-		recordService.deleteByRecId(recForm.getRecId());
 		
-    	//セッションに入っているaccountFormを最新のnewAccountFormに更新
-    	LoginForm newLoginForm = new LoginForm();
-    	newLoginForm = newLoginForm(loginForm.getUserName());
-    	model.addAttribute("loginForm", newLoginForm);
-
-		model.addAttribute("title", "成長記録削除完了");
-		return "complete";
+		if(loginForm.getPass() != null) {
+	        //入力されたRecFormから削除するpetIdを取り出す
+	    	int recId = recForm.getRecId();
+	
+			//recIdの成長記録を削除
+			recordService.deleteByRecId(recId);
+			
+	    	//セッションに入っているactFormを最新のnewAccountFormに更新
+	    	LoginForm newLoginForm = new LoginForm();
+	    	newLoginForm = newLoginForm(loginForm.getUserName());
+	    	model.addAttribute("loginForm", newLoginForm);
+	
+			model.addAttribute("menuView", true);
+			model.addAttribute("title", "成長記録削除完了");
+			return "complete";
+		} else {
+			model.addAttribute("title", "エラー");
+			return "redirect:/error?login_required";
+			
+		}
 	}
 
 

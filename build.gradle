@@ -17,6 +17,13 @@ targetCompatibility = '1.8'
 
 compileJava.options.encoding = "UTF-8"
 
+configurations {
+    provided
+}
+
+sourceSets {
+    main { compileClasspath += configurations.provided }
+}
 
 repositories {
 	mavenCentral()
@@ -53,9 +60,14 @@ dependencies {
     compile 'org.springframework.security:spring-security-web:4.2.1.RELEASE'
     compile 'org.springframework.security:spring-security-config:4.2.1.RELEASE'
 
+	// for lombok
+	provided 'org.projectlombok:lombok:1.16.4'
+
 }
 
 //war.baseName = 'spring-security-sample'
+
+mainClassName = 'sample.lombok.Main'
 
 test {
     useJUnitPlatform()

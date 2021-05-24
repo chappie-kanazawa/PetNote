@@ -1,8 +1,6 @@
 package com.example.demo.app.record;
 
 
-import java.time.LocalDateTime;
-
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -29,7 +27,7 @@ public class RecForm {
     
     @NotNull (message = "記録日を設定してください。")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    private LocalDateTime recDate;
+    private String recDate;
 
     @NotNull (message = "ペットを選択してください。")
 	//@Pattern(regexp ="^([0-9])+$", message= "ペットを選択してください。")
@@ -45,7 +43,7 @@ public class RecForm {
 			String comment,
 			MultipartFile recPicFile,
 			String recPic,
-		    LocalDateTime recDate,
+			String recDate,
 		    int petId,
 		    String petName
 			) {
@@ -86,10 +84,10 @@ public class RecForm {
 		this.recPic = recPic;
 	}
 
-	public LocalDateTime getRecDate() {
+	public String getRecDate() {
 		return recDate;
 	}
-	public void setRecDate(LocalDateTime recDate) {
+	public void setRecDate(String recDate) {
 		this.recDate = recDate;
 	}
 	public int getPetId() {

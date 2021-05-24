@@ -34,11 +34,11 @@
 							<p class="invalid-feedback" th:if="${#fields.hasErrors('kind')}"
 								th:errors="*{kind}">エラーメッセージ</p>
 
-							<label class="form-label">性別</label> <select class="form-select"
-								name="gender" id="geder">
-								<option value="0" th:selected="*{gender} == 0">指定なし</option>
-								<option value="1" th:selected="*{gender} == 1">♂</option>
-								<option value="2" th:selected="*{gender} == 2">♀</option>
+							<label class="form-label">性別</label> 
+							<select class="form-select" name="gender" id="gender">
+								<option value="0" th:selected="*{gender.equals(0)}" >指定なし</option>
+								<option value="1" th:selected="*{gender.equals(1)}" >♂</option>
+								<option value="2" th:selected="*{gender.equals(2)}">♀</option>
 							</select><br>
 							<p class="invalid-feedback"
 								th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}">エラーメッセージ</p>

@@ -7,17 +7,18 @@
 <body>
 <div th:replace="layout :: header"></div>
 
-<main class="container">
+<main class="container" id="index">
 	<div class="bg-light p-5 rounded">
 	
-	<h1 th:text="${title}"></h1>
+	<h1 class="fw-light" th:text="${title}"></h1>
+	<p th:text="${loginForm.pass}"></p>
 
 	<p class="lead" th:if="${param.logout}" style="color: red;">
 	 	ログアウトが完了しました。
 	</p>
 
-	<a class="btn btn-lg btn-primary" href="#" th:href="@{/login}" role="button">ログイン</a>
-	<a class="btn btn-lg btn-primary" href="#" th:href="@{/register}" role="button">アカウント登録</a>
+	<a class="btn btn-lg btn-primary mb-2" href="#" th:href="@{/login}" role="button">ログイン</a>
+	<a class="btn btn-lg btn-primary mb-2" href="#" th:href="@{/register}" role="button">アカウント登録</a>
 	</div>
 </main>
 
