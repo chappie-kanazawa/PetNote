@@ -343,10 +343,10 @@ public class PetNoteController {
 		} else {
 			
 			//画像を保存 ファイル名filePath で画像を保存,　空の場合はダミー画像
-			String filePath;
-			if ( accountForm.getIconFile().isEmpty() ) {
+			String filePath = accountForm.getIcon();
+			if ( accountForm.getIconFile().isEmpty() && filePath == null ) {
 				filePath = "/images/dummy.jpg";
-			} else {
+			} else if ( !accountForm.getIconFile().isEmpty() ){
 				filePath = saveAndGetFilePath(accountForm.getIconFile(), "account");
 			}
 	
@@ -522,13 +522,13 @@ public class PetNoteController {
     	}
     	
 		//画像を保存 ファイル名filePath で画像を保存,　空の場合はダミー画像
-		String filePath;
-		if ( petForm.getPetIconFile().isEmpty() ) {
+		String filePath = petForm.getPetIcon();
+		if ( petForm.getPetIconFile().isEmpty() && filePath == null ) {
 			filePath = "/images/dummy.jpg";
-		} else {
+		} else if ( !petForm.getPetIconFile().isEmpty() ){
 			filePath = saveAndGetFilePath(petForm.getPetIconFile(), "pet");
 		}
-
+		
 		petForm.setPetIcon(filePath);
 		model.addAttribute("petForm", petForm);
 
@@ -731,16 +731,22 @@ public class PetNoteController {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
 		LocalDateTime formattedDate = LocalDateTime.parse(recForm.getRecDate());
 		
-		//画像を保存 ファイル名fileName で画像を保存
-		String recPicPath = saveAndGetFilePath(recForm.getRecPicFile(), "rec");
-		recForm.setRecPic(recPicPath);
+		//画像を保存 ファイル名filePath で画像を保存,　空の場合はnull
+		String filePath;
+		if ( recForm.getRecPicFile().isEmpty() ) {
+			filePath = null;
+		} else {
+			filePath = saveAndGetFilePath(recForm.getRecPicFile(), "rec");
+		}
+		
+		recForm.setRecPic(filePath);
 		model.addAttribute("recForm", recForm);
 		
         //入力されたRecForm を recordに詰めなおす
     	Record record = new Record();
     	record.setComment(recForm.getComment());
     	record.setRecDate(formattedDate);
-    	record.setRecPic(recPicPath);
+    	record.setRecPic(filePath);
     	record.setPetId(recForm.getPetId());		
     	
     	//DBにrecordを登録

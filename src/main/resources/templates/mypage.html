@@ -224,8 +224,9 @@
 									</div>
 									<!-- end of float-end  -->
 									
-									<img th:src="@{${rec.recPic}}"
-									class="bd-placeholder-img card-img-top mt-3"　/>
+									<img th:unless="${#strings.isEmpty(rec.recPic)}" 
+										th:src="@{${rec.recPic}}" 
+										class="bd-placeholder-img card-img-top mt-3">
 									
 								</div>
 								<!-- end of card-body  -->

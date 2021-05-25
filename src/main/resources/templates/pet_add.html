@@ -45,9 +45,9 @@
 
 							<label class="form-label">性別</label> 
 							<select class="form-select" name="gender" id="gender">
-								<option value="0" th:selected="*{gender} == 0">指定なし</option>
-								<option value="1" th:selected="*{gender} == 1">♂</option>
-								<option value="2" th:selected="*{gender} == 2">♀</option>
+								<option value="0" th:selected="*{gender.equals(0)}" >指定なし</option>
+								<option value="1" th:selected="*{gender.equals(1)}" >♂</option>
+								<option value="2" th:selected="*{gender.equals(2)}">♀</option>
 							</select><br>
 							<p class="invalid-feedback"
 								th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}">エラーメッセージ</p>
@@ -57,16 +57,20 @@
 								type="file" 
 								name="petIconFile" 
 								th:field="*{petIconFile}"
-								id="petIconFile" /><br>
+								id="petIconFile" />
 							<p class="invalid-feedback"
-								th:if="${#fields.hasErrors('petIcon')}" 
-								th:errors="*{petIcon}">エラーメッセージ</p>
-							
-							<img th:if="*{!#strings.isEmpty(petIcon)}" 
-								class="img-in-table rounded mx-auto d-block mb-4"
-								th:src="@{*{petIcon}}" alt="ペット画像"> 
+								th:if="${#fields.hasErrors('petIconFile')}" 
+								th:errors="*{petIconFile}">エラーメッセージ</p>
+								
+							<th:block th:unless="*{#strings.isEmpty(petIcon)}">
+								<label class="form-label mt-4">（現在選択中の画像）</label> 
+								<img class="img-in-table rounded mx-auto d-block mb-4" 
+									th:src="@{*{petIcon}}" alt="ペットアイコン画像">
+								<input type="hidden" name="petIcon" th:value="*{petIcon}">
+							</th:block>
 
 							<!-- ユーザーIDをセット -->
+							
 							<input type="hidden" name="userId" th:field="${loginForm.userId}" />
 
 							<button class="w-100 btn btn-primary btn-lg mt-4" type="submit">内容確認</button>
