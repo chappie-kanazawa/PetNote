@@ -13,24 +13,33 @@
 				<form method="POST" th:action="@{/record_delete_complete}"
 					name="recForm" th:object="${recForm}">
 
-					<h3 class="fw-light">成長記録削除確認</h3>
+					<h3 class="fw-light">成長記録削除確認</h3>	
 
 					<p class="lead text-muted">
 						本当に
 						<th:block th:text="*{petName}"></th:block>
-						ちゃんの
-						<th:block th:text="*{recDate}"></th:block>
-						の記録を削除してもよろしいですか？
+						ちゃんの、以下のの記録を削除してもよろしいですか？
 					</p>
-
+					
 					<div>
-						<input type="hidden" name="petId" th:value="*{recId}">
+						<input type="hidden" name="recId" th:value="*{recId}">
 						<button class="w-100 btn btn-primary btn-lg" type="submit">削除</button>
 					</div>
 					
 					<a href="#" class="btn btn-sm btn-outline-secondary mt-2 me-1 w-100"
 						th:href="@{/mypage/{userName}(userName=${loginForm.userName})}">
 						マイページに戻る</a>
+						
+					<div class="card shadow-sm mt-4">		
+						<div class="card-body">
+							<p class="card-text" th:text="*{recDate}">投稿日時表示</p>
+							<p class="card-text" th:text="*{comment}">成長記録表示</p>
+							<img th:unless="*{#strings.isEmpty(recPic)}" 
+								th:src="@{*{recPic}}" 
+								class="bd-placeholder-img card-img-top mt-3"
+								 alt="成長記録写真">
+						</div><!-- end of card-body  -->
+					</div><!-- endo of shadow-sm -->
 
 				</form>
 

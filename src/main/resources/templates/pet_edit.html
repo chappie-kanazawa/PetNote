@@ -19,7 +19,6 @@
 				<form class="p-2" method="POST" th:action="@{/pet_edit_complete}"
 					name="petForm" th:object="${petForm}" enctype="multipart/form-data">
 
-
 					<div class="row g-3">
 						<div class="col-12">
 
@@ -61,7 +60,7 @@
 
 							<!-- ユーザーID、ペットIDはそのまま送信 -->
 							<input type="hidden" name="petId" th:value="*{petId}"> 
-							<input　type="hidden" name="userId" th:value="*{userId}">
+							<input type="hidden" name="userId" th:value="*{userId}">
 
 							<button class="w-100 btn btn-primary btn-lg mt-4" type="submit">確定</button>
 						</div>

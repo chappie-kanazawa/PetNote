@@ -55,15 +55,20 @@
 								style="color: red;">エラーメッセージ</p>
 							<div class="invalid-feedback">成長記録を入力してください。</div>
 
-							<label class="form-label">画像</label> <input class="form-control"
+							<label class="form-label">画像</label> 
+							<p th:if="*{#strings.isEmpty(recPic)}">現在設定されている写真はありません。</p>
+							<input class="form-control"
 								type="file" name="recPicFile" th:value="*{recPicFile}"
 								id="recPicFile" /><br>
 							<p th:if="${#fields.hasErrors('recPicFile')}"
 								th:errors="*{recPicFile}" style="color: red;">エラーメッセージ</p>
-
-							<img class="img-in-table rounded mx-auto d-block mb-4"
-								th:src="@{*{recPic}}" alt="成長記録画像"> <input type="hidden"
-								name="recPic" th:field="*{recPic}" />
+							
+							<th:block th:unless="*{#strings.isEmpty(recPic)}">
+								<label class="form-label mt-4">（現在の成長記録写真）</label> 
+								<img class="img-in-table rounded mx-auto d-block mb-4" 
+									th:src="@{*{recPic}}" alt="成長記録写真">
+								<input type="hidden" name="recPic" th:value="*{recPic}">
+							</th:block>
 
 							<!-- hidden -->
 							<input type="hidden" name="recId" th:value="*{recId}">

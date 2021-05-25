@@ -95,14 +95,6 @@ public class PetNoteController {
 	// 画像アップロード
 	/////////////////////
 
-//	private String getExtension(String filename) {
-//		int dot = filename.lastIndexOf(".");
-//		if (dot > 0) {
-//			return filename.substring(dot).toLowerCase();
-//		}
-//		return "";
-//	}
-
 	private String getUploadFileName(String fileName) {
 
 		return DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS").format(LocalDateTime.now())
@@ -155,11 +147,6 @@ public class PetNoteController {
 		
 		//取得したaccount情報をloginFormにコピー
 		BeanUtils.copyProperties(account, loginForm);
-//		loginForm.setUserId(account.getUserId());
-//		loginForm.setUserName(account.getUserName());
-//		loginForm.setPass(account.getPass());
-//		loginForm.setIcon(account.getIcon());
-//		loginForm.setIntro(account.getIntro());
 		
 	    //petのリストを取得する
 	    List<Pet> petList = petService.findByUserId(account.getUserId());
@@ -310,6 +297,7 @@ public class PetNoteController {
 			LoginForm loginForm,
 			Model model
 			) {
+		
 //		if (loginForm.getPass().isEmpty()) {
 			//アカウント新規登録
 			model.addAttribute("accountForm", accountForm);
@@ -332,26 +320,29 @@ public class PetNoteController {
 		
 		// エラーがある場合、自画面遷移する
     	if (resultAccount.hasErrors()) {
+    		model.addAttribute("accountForm", accountForm);
 			model.addAttribute("title", "アカウント登録");
     		return "register";
     	}		
+
+		//画像を保存 ファイル名filePath で画像を保存,　空の場合はダミー画像
+		String filePath = accountForm.getIcon();
+		if ( accountForm.getIconFile().isEmpty() && filePath == null ) {
+			filePath = "/images/dummy.jpg";
+		} else if ( !accountForm.getIconFile().isEmpty() ){
+			filePath = saveAndGetFilePath(accountForm.getIconFile(), "account");
+		}
+
+		accountForm.setIcon(filePath);
+		model.addAttribute("accountForm", accountForm);
     	
     	//アカウント名重複確認
 		if (accountService.isExist(accountForm.getUserName())) {
-			model.addAttribute("title", "アカウント登録");
-			return "redirect:/register?userName_error";
-		} else {
+			model.addAttribute("userNameHasError", true);
+			model.addAttribute("title", "入力内容確認");
+			return "register_confirm";
 			
-			//画像を保存 ファイル名filePath で画像を保存,　空の場合はダミー画像
-			String filePath = accountForm.getIcon();
-			if ( accountForm.getIconFile().isEmpty() && filePath == null ) {
-				filePath = "/images/dummy.jpg";
-			} else if ( !accountForm.getIconFile().isEmpty() ){
-				filePath = saveAndGetFilePath(accountForm.getIconFile(), "account");
-			}
-	
-			accountForm.setIcon(filePath);
-			model.addAttribute("accountForm", accountForm);
+		} else {
 			
 			model.addAttribute("title", "入力内容確認");
 			return "register_confirm";			
@@ -367,13 +358,7 @@ public class PetNoteController {
 
 		// 入力されたアカウント情報accountForm を accountに詰めなおす
 		Account account = new Account();
-		account.setUserName(accountForm.getUserName());
-		account.setPass(accountForm.getPass());
-		account.setIcon(accountForm.getIcon());
-		account.setIntro(accountForm.getIntro());
-		
-    	//取得したaccount情報をaccountFormにコピー
-//    	BeanUtils.copyProperties(accountForm, account);
+    	BeanUtils.copyProperties(accountForm, account);
 
 		// DBにaccountを登録
 		accountService.registerAccount(account);
@@ -425,7 +410,7 @@ public class PetNoteController {
 			
 	    	//取得したaccount情報をaccountFormにコピー
 	    	BeanUtils.copyProperties(account, accountForm);
-			
+	    	
 			//詰めなおしたaccountFormをセッション(model)にセットする
 			model.addAttribute("accountForm", accountForm);
 			
@@ -459,13 +444,14 @@ public class PetNoteController {
     	Account account = new Account();
     	BeanUtils.copyProperties(accountForm, account);
     	
-		//画像の変更があった場合は、新しい画像を保存し、ファイル名パス filePath をaccountに上書き
-		if ( accountForm.getIconFile() != null ) {
-	    	String filePath;
+		//画像の変更があった場合は、新しい画像を保存し、ファイル名パス filePath をaccountに上書き、空の場合は古いのをそのまま残す
+    	String filePath = accountForm.getIcon();
+		if ( !accountForm.getIconFile().isEmpty() ) {
 			filePath = saveAndGetFilePath(accountForm.getIconFile(), "account");
-			account.setIcon(filePath);
 		}
-
+		account.setIcon(filePath);
+		accountForm.setIcon(filePath);
+		
     	// 変更したaccount情報をDBに上書き実行
     	accountService.editAccount(account);
     	
@@ -490,8 +476,8 @@ public class PetNoteController {
     
 	@RequestMapping(value = "/pet_add")
 	public String goAddPet(
-			PetForm petForm, 
 			LoginForm loginForm,
+			PetForm petForm, 
 			Model model
 			)  {
 		
@@ -499,11 +485,11 @@ public class PetNoteController {
 			model.addAttribute("menuView", true);
 			model.addAttribute("title", "ペット追加");
 			return "pet_add";
+			
     	} else {
 	    	model.addAttribute("title", "エラー");
     		return "redirect:/error?login_required";
     	}
-		
 	}
  
     @RequestMapping(value = "/pet_confirm", method = RequestMethod.POST)
@@ -547,11 +533,7 @@ public class PetNoteController {
         
         //入力されたPetForm を petに詰めなおす
     	Pet pet = new Pet();
-    	pet.setPetName(petForm.getPetName());
-    	pet.setKind(petForm.getKind());
-    	pet.setGender(petForm.getGender());
-    	pet.setPetIcon(petForm.getPetIcon());
-    	pet.setUserId(loginForm.getUserId());
+    	BeanUtils.copyProperties(petForm, pet);
 
     	//DBにpetを登録
 		petService.addPet(pet);
@@ -610,12 +592,12 @@ public class PetNoteController {
     	BeanUtils.copyProperties(petForm, pet);
     	
 		//画像の変更があった場合は、新しい画像を保存し、ファイル名パス filePath をpetに上書き
-		if ( petForm.getPetIconFile() != null ) {
-	    	String filePath;
+    	String filePath = petForm.getPetIcon();
+		if ( !petForm.getPetIconFile().isEmpty() ) {
 			filePath = saveAndGetFilePath(petForm.getPetIconFile(), "pet");
-			pet.setPetIcon(filePath);
 		}
-
+		pet.setPetIcon(filePath);
+		
     	//DBにpetを登録
 		petService.editPet(pet);
 		
@@ -651,8 +633,7 @@ public class PetNoteController {
     @RequestMapping(value = "/pet_delete_complete", method = RequestMethod.POST)
     public String deletePetComplete(
     		LoginForm loginForm,
-    		@Validated @ModelAttribute("petForm") PetForm petForm, 
-    		BindingResult result,
+    		PetForm petForm, 
     		Model model
     		) {
         
@@ -662,9 +643,12 @@ public class PetNoteController {
     	//petIdのペットを削除
 		petService.deleteByPetId(petId);
 		
-		//petIdに紐づく成長記録も全て削除
-		recordService.deleteByPetId(petId);
-		
+		//petIdに紐づく成長記録1が存在する場合、も全て削除
+		List<Record> recList = recordService.findByPetId(petId);
+		if(!recList.isEmpty()) {
+			recordService.deleteByPetId(petId);
+		}
+			
     	//セッションに入っているaccountFormを最新のnewAccountFormに更新
     	LoginForm newLoginForm = new LoginForm();
     	newLoginForm = newLoginForm(loginForm.getUserName());
@@ -795,25 +779,25 @@ public class PetNoteController {
 			return "record_edit";
 		}
 		
+        //セッションスコープにあるRecForm を recordに詰めなおす
+    	Record record = new Record();
+    	BeanUtils.copyProperties(recForm, record);
+    	
 		//String→LocalDateTimeに日付フォーマットを修正
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
 		LocalDateTime formattedDate = LocalDateTime.parse(recForm.getRecDate());
-    	
+		
+		//成長記録日を上書き
+    	record.setRecDate(formattedDate);
+		
 		//filePathに既存の画像のパスを代入
 		String filePath =  recForm.getRecPic();
-    	
-		//画像を保存 ファイル名filePath で画像を保存
-		if (recForm.getRecPic() != null) {
-			filePath = saveAndGetFilePath(recForm.getRecPicFile(), "rec");			
+		
+		//画像の変更があった場合は、新しい画像を保存し、ファイル名パス filePath をrecordに上書き
+		if ( recForm.getRecPicFile() != null ) {
+			filePath = saveAndGetFilePath(recForm.getRecPicFile(), "rec");
 		}
-        
-        //入力されたRecForm を recordに詰めなおす
-    	Record record = new Record();
-    	record.setPetId(recForm.getPetId());
-    	record.setRecDate(formattedDate);
-    	record.setComment(recForm.getComment());
-    	record.setRecPic(filePath);
-    	record.setRecId(recForm.getRecId());
+		record.setRecPic(filePath);
 
     	//DBにpetを登録
     	recordService.editRecord(record);
@@ -831,11 +815,10 @@ public class PetNoteController {
 	/////////////////////
 	// 成長記録削除確認
 	/////////////////////
-	@RequestMapping(value = "/record_delete_confirm/{recId}")
+	@RequestMapping(value = "/record_delete_confirm")
 	public String confirmDeleteRecord(
 			LoginForm loginForm,
 			RecForm recForm,
-			@PathVariable("recId") int recId,
 			Model model
 			) {
 		if(loginForm.getPass() != null) {
@@ -853,21 +836,22 @@ public class PetNoteController {
 	/////////////////////
 	// 成長記録削除
 	/////////////////////
-	@RequestMapping(value = "/record_delete_complete")
-	public String deleteRecord(
+	@RequestMapping(value = "/record_delete_complete", method = RequestMethod.POST)
+	public String completeDeleteRecord(
 			LoginForm loginForm,
 			RecForm recForm,
 			Model model
 			) {
 		
-		if(loginForm.getPass() != null) {
+		if( loginForm.getPass() != null ) {
+			
 	        //入力されたRecFormから削除するpetIdを取り出す
 	    	int recId = recForm.getRecId();
 	
 			//recIdの成長記録を削除
 			recordService.deleteByRecId(recId);
 			
-	    	//セッションに入っているactFormを最新のnewAccountFormに更新
+	    	//セッションに入っているaccountFormを最新のnewAccountFormに更新
 	    	LoginForm newLoginForm = new LoginForm();
 	    	newLoginForm = newLoginForm(loginForm.getUserName());
 	    	model.addAttribute("loginForm", newLoginForm);

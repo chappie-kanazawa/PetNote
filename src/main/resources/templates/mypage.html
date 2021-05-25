@@ -209,10 +209,13 @@
 											</form>
 
 											<form method="POST"
-												th:action="@{/record_delete_confirm/{recId}(recId=${rec.recId})}"
+												th:action="@{/record_delete_confirm}"
 												name="recForm" th:object="${recForm}">
 												<input type="hidden" name="recId" th:value="${rec.recId}">
+												<input type="hidden" name="comment" th:value="${rec.comment}"> 
+												<input type="hidden" name="recPic" th:value="${rec.recPic}"> 
 												<input type="hidden" name="recDate" th:value="${rec.recDate}">
+												<input type="hidden" name="petId" th:value="${pet.petId}">
 												<input type="hidden" name="petName" th:value="${pet.petName}">
 												<button type="submit"
 													class="btn btn-sm btn-outline-secondary mt-2 me-1">削除</button>
@@ -226,7 +229,8 @@
 									
 									<img th:unless="${#strings.isEmpty(rec.recPic)}" 
 										th:src="@{${rec.recPic}}" 
-										class="bd-placeholder-img card-img-top mt-3">
+										class="bd-placeholder-img card-img-top mt-3"
+										 alt="成長記録写真">
 									
 								</div>
 								<!-- end of card-body  -->
