@@ -12,6 +12,10 @@
 			<div class="py-4 container">
 
 				<h1 class="fw-light">アカウント情報更新</h1>
+				<a href="#" class="btn btn-sm btn-outline-secondary mt-2 me-1"
+					th:href="@{/mypage/{userName}(userName=${loginForm.userName})}">
+					マイページに戻る</a>
+				
 				<form class="p-2" method="POST"
 					th:action="@{/account_edit_complete}" name="accountForm"
 					th:object="${accountForm}" enctype="multipart/form-data">
@@ -32,7 +36,7 @@
 								th:if="${#fields.hasErrors('pass')}" th:errors="*{pass}">エラーメッセージ</p>
 
 							<label class="form-label mt-4">アイコン画像</label> 
-							<p>※変更する場合は選択してください。</p>
+							<p class="form-text">※変更する場合は新しい画像を選択してください。</p>
 							<input
 								class="form-control" type="file" name="iconFile" th:value="*{iconFile}"
 								id="iconFile" />
@@ -54,8 +58,9 @@
 							<!-- ユーザーID受け渡し -->
 							<input type="hidden" name="userId" th:value="*{userId}">
 
-							<button class="w-100 btn btn-primary btn-lg mt-4" type="submit">確定</button>
-
+							<button class="w-100 btn btn-primary btn-lg mt-4" type="submit">
+							確定</button>
+							
 						</div>
 					</div>
 				</form>

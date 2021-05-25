@@ -254,6 +254,13 @@ public class PetNoteController {
     		Model model) {
     	
     	if(loginForm.getPass() != null) {
+    		
+        	//セッションに入っているloginFormに、最新loginFormを上書き
+    		//（ログインした人がログアウト手続きをせずに新規アカウントを作成した際に、前のユーザー名のマイページを表示させないため）
+        	LoginForm newLoginForm = new LoginForm();
+        	newLoginForm = newLoginForm(loginForm.getUserName());
+        	model.addAttribute("loginForm", newLoginForm);
+    		
 	    	LocalDateTime dt = LocalDateTime.now();
 	    	dt = dt.of(dt.getYear(), dt.getMonth(), dt.getDayOfMonth(), dt.getHour(), dt.getMinute(), dt.getSecond());
 	    	
@@ -353,6 +360,7 @@ public class PetNoteController {
 	@RequestMapping(value = "/register_complete", method = RequestMethod.POST)
 	public String completeRegisterAccount(
 			AccountForm accountForm, 
+			LoginForm loginForm,
 			Model model
 			) {
 
@@ -363,6 +371,10 @@ public class PetNoteController {
 		// DBにaccountを登録
 		accountService.registerAccount(account);
 
+		//loginFormに新規登録されたアカウントのユーザー名とパスワードをセットする
+		loginForm.setUserName(accountForm.getUserName());
+		loginForm.setPass(accountForm.getPass());
+		
 		model.addAttribute("title", "アカウント登録完了");
 		return "complete";
 	}

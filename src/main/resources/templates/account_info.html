@@ -15,6 +15,10 @@
 
 				<div th:if="${param.edit_complete}" class="alert alert-primary"
 					role="alert">アカウント情報の更新が完了しました。</div>
+					
+				<a href="#" class="btn btn-sm btn-outline-secondary mt-2 me-1"
+					th:href="@{/mypage/{userName}(userName=${loginForm.userName})}">
+					マイページに戻る</a>
 
 				<table class="table" th:object=${loginForm}>
 					<tbody>
@@ -41,12 +45,9 @@
 
 				<a href="#"
 					th:href="@{/account_edit/{userName}(userName=${loginForm.userName})}">
-					<button type="submit" class="w-100 btn btn-primary btn-lg">アカウント情報を更新する</button>
+					<button class="w-100 btn btn-primary btn-lg mt-2">
+					アカウント情報を更新する</button>
 				</a>
-				
-				<a href="#" class="btn btn-sm btn-outline-secondary mt-2 me-1　w-100"
-					th:href="@{/mypage/{userName}(userName=${loginForm.userName})}">
-					マイページに戻る</a>
 
 			</div>
 		</section>

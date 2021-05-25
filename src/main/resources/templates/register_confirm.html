@@ -44,7 +44,8 @@
 				<input type="hidden" name="pass" th:value="*{pass}">
 				<input type="hidden" name="icon" th:value="*{icon}">
 				<input type="hidden" name="intro" th:value="*{intro}">
-				<button class="w-100 btn btn-primary btn-lg" type="submit">修正</button>
+				<button type="submit" class="btn btn-sm btn-outline-secondary mt-2 me-1 w-100">
+					修正</button>
 			 </form>
 
 			 <form th:unless="${userNameHasError}"
@@ -54,7 +55,8 @@
 				<input type="hidden" name="pass" th:value="*{pass}">
 				<input type="hidden" name="icon" th:value="*{icon}">
 				<input type="hidden" name="intro" th:value="*{intro}">
-				<button class="w-100 btn btn-primary btn-lg" type="submit">確定</button>
+				<button type="submit" class="w-100 btn btn-primary btn-lg mt-2">
+					確定</button>
 			 </form>
  
 </div>

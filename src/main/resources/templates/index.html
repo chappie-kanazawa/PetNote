@@ -13,7 +13,7 @@
 	<h1 class="fw-light" th:text="${title}"></h1>
 	<p th:text="${loginForm.pass}"></p>
 
-	<p class="lead" th:if="${param.logout}" style="color: red;">
+	<p class="alert alert-primary" th:if="${param.logout}">
 	 	ログアウトが完了しました。
 	</p>
 

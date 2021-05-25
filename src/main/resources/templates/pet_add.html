@@ -12,6 +12,10 @@
 			<div class="py-4 container">
 
 				<h1 class="fw-light">ペット追加</h1>
+				
+				<a href="#" class="btn btn-sm btn-outline-secondary mt-2 me-1"
+					th:href="@{/mypage/{userName}(userName=${loginForm.userName})}">
+					マイページに戻る</a>
 
 				<form class="p-2" 
 					method="POST" 
@@ -69,8 +73,7 @@
 								<input type="hidden" name="petIcon" th:value="*{petIcon}">
 							</th:block>
 
-							<!-- ユーザーIDをセット -->
-							
+							<!-- ユーザーIDをセット -->							
 							<input type="hidden" name="userId" th:field="${loginForm.userId}" />
 
 							<button class="w-100 btn btn-primary btn-lg mt-4" type="submit">内容確認</button>

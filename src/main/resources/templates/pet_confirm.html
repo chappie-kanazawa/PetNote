@@ -46,25 +46,23 @@
 				</table>
 				
 				<form th:action="@{/pet_add}" th:object="${petForm}" method="post" name="petForm">
-					<div>
-						<input type="hidden" name="petName" th:value="*{petName}">
-						<input type="hidden" name="kind" th:value="*{kind}"> 
-						<input type="hidden" th:field="*{gender}" name="gender">
-						<input type="hidden" th:field="*{petIcon}" name="gender">
-						<input type="hidden" name="userId" th:value="${loginForm.userId}">
-						<button class="w-100 btn btn-primary btn-lg" type="submit">修正</button>
-					</div>
+					<input type="hidden" name="petName" th:value="*{petName}">
+					<input type="hidden" name="kind" th:value="*{kind}"> 
+					<input type="hidden" th:field="*{gender}" name="gender">
+					<input type="hidden" th:field="*{petIcon}" name="gender">
+					<input type="hidden" name="userId" th:value="${loginForm.userId}">
+					<button type="submit" class="btn btn-sm btn-outline-secondary mt-2 me-1 w-100">
+					修正</button>
 				</form>
 
 				<form th:action="@{/pet_complete}" th:object="${petForm}" method="post" name="petForm">
-					<div>
-						<input type="hidden" name="petName" th:value="*{petName}">
-						<input type="hidden" name="kind" th:value="*{kind}"> 
-						<input type="hidden" th:field="*{gender}" name="gender">
-						<input type="hidden" th:field="*{petIcon}" name="gender">
-						<input type="hidden" name="userId" th:value="${loginForm.userId}">
-						<button class="w-100 btn btn-primary btn-lg" type="submit">確定</button>
-					</div>
+					<input type="hidden" name="petName" th:value="*{petName}">
+					<input type="hidden" name="kind" th:value="*{kind}"> 
+					<input type="hidden" th:field="*{gender}" name="gender">
+					<input type="hidden" th:field="*{petIcon}" name="gender">
+					<input type="hidden" name="userId" th:value="${loginForm.userId}">
+					<button type="submit" class="w-100 btn btn-primary btn-lg mt-2">
+					確定</button>
 				</form>
 
 			</div>

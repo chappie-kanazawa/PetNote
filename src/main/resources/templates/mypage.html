@@ -95,10 +95,10 @@
 					[[${loginForm.userName}]] さんのペット一覧
 				</h3>
 
+				<p th:if="${#lists.isEmpty(loginForm.petList)}">まだペットは登録されていません。</p>
+
 				<a href="#" class="btn btn-primary my-2" th:href="@{/pet_add}">
 					ペット追加 </a>
-
-				<p th:if="${#lists.isEmpty(loginForm.petList)}">まだペットは登録されていません。</p>
 
 				<div class="row row-cols-1 row-cols-sm-2 g-3"
 					th:unless="${#lists.isEmpty(loginForm.petList)}">
@@ -110,12 +110,14 @@
 								class="bd-placeholder-img card-img-top  pic-trim mt-2"/> 
 
 							<div class="card-body">
-								<ul>
-									<li class="card-text" th:text=${pet.petName}>ペット名表示</li>
-									<li class="card-text" th:text=${pet.kind}>ペット種類表示</li>
-									<li><th:block th:if="${pet.gender==0}">指定なし</th:block> <th:block
-											th:if="${pet.gender==1}">♂</th:block> <th:block
-											th:if="${pet.gender==2}">♀</th:block></li>
+								<ul class="list-group list-group-horizontal">
+									<li class="list-group-item" th:text=${pet.petName}>ペット名表示</li>
+									<li class="list-group-item" th:text=${pet.kind}>ペット種類表示</li>
+									<li class="list-group-item">
+										<th:block th:if="${pet.gender==0}">指定なし</th:block> 
+										<th:block th:if="${pet.gender==1}">♂</th:block> 
+										<th:block th:if="${pet.gender==2}">♀</th:block>
+									</li>
 								</ul>
 
 								<a href="#" class="btn btn-primary my-1"
@@ -162,7 +164,7 @@
 		</section>
 
 		<!-- ////////////////成長記録一覧表示/////////////// -->
-		<section class="py-5" id="rec_list" th:if="${!#lists.isEmpty(loginForm.petList)}">
+		<section class="py-5" id="rec_list" th:unless="${#lists.isEmpty(loginForm.petList)}">
 			<div class="container">
 
 				<h3 class="fw-light">
@@ -241,15 +243,15 @@
 						</div>
 						<!-- end of each:rec  -->
 						
-					</div>
-					<!-- end of each:pet  -->
-
 					<a href="#" class="w-100 btn btn-primary btn-lg mt-3"
 						th:href="@{/record_list/{petId}/{petName}(petId=${pet.petId}, petName=${pet.petName})}">
 						もっと見る </a>
-						
-					<hr class="my-4">
 					
+					<hr class="my-4">
+											
+					</div>
+					<!-- end of each:pet  -->
+						
 				</div>
 				
 				
