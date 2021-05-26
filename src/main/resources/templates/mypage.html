@@ -97,37 +97,42 @@
 
 				<p th:if="${#lists.isEmpty(loginForm.petList)}">まだペットは登録されていません。</p>
 
-				<a href="#" class="btn btn-primary my-2" th:href="@{/pet_add}">
+				<a href="#" class="btn btn-primary my-3" th:href="@{/pet_add}">
 					ペット追加 </a>
-
+				
 				<div class="row row-cols-1 row-cols-sm-2 g-3"
 					th:unless="${#lists.isEmpty(loginForm.petList)}">
-
+					
 					<div class="col" th:each="pet : ${loginForm.petList}">
 						<div class="card shadow-sm">
 
+						<h4 class="text-center fw-light my-3">
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bug" viewBox="0 0 16 16">
+						  <path d="M4.355.522a.5.5 0 0 1 .623.333l.291.956A4.979 4.979 0 0 1 8 1c1.007 0 1.946.298 2.731.811l.29-.956a.5.5 0 1 1 .957.29l-.41 1.352A4.985 4.985 0 0 1 13 6h.5a.5.5 0 0 0 .5-.5V5a.5.5 0 0 1 1 0v.5A1.5 1.5 0 0 1 13.5 7H13v1h1.5a.5.5 0 0 1 0 1H13v1h.5a1.5 1.5 0 0 1 1.5 1.5v.5a.5.5 0 1 1-1 0v-.5a.5.5 0 0 0-.5-.5H13a5 5 0 0 1-10 0h-.5a.5.5 0 0 0-.5.5v.5a.5.5 0 1 1-1 0v-.5A1.5 1.5 0 0 1 2.5 10H3V9H1.5a.5.5 0 0 1 0-1H3V7h-.5A1.5 1.5 0 0 1 1 5.5V5a.5.5 0 0 1 1 0v.5a.5.5 0 0 0 .5.5H3c0-1.364.547-2.601 1.432-3.503l-.41-1.352a.5.5 0 0 1 .333-.623zM4 7v4a4 4 0 0 0 3.5 3.97V7H4zm4.5 0v7.97A4 4 0 0 0 12 11V7H8.5zM12 6a3.989 3.989 0 0 0-1.334-2.982A3.983 3.983 0 0 0 8 2a3.983 3.983 0 0 0-2.667 1.018A3.989 3.989 0 0 0 4 6h8z"/>
+						</svg>
+							<th:block　th:text="${pet.petName}"></th:block>
+						</h4>
+
 							<img th:src="@{${pet.petIcon}}"
-								class="bd-placeholder-img card-img-top  pic-trim mt-2"/> 
+								class="bd-placeholder-img card-img-top  pic-trim px-2"/> 
 
 							<div class="card-body">
-								<ul class="list-group list-group-horizontal">
-									<li class="list-group-item" th:text=${pet.petName}>ペット名表示</li>
-									<li class="list-group-item" th:text=${pet.kind}>ペット種類表示</li>
-									<li class="list-group-item">
-										<th:block th:if="${pet.gender==0}">指定なし</th:block> 
+
+								<p class="text-center">
+									<th:block th:text=${pet.kind}></th:block>
+									 / 	<th:block th:if="${pet.gender==0}">指定なし</th:block> 
 										<th:block th:if="${pet.gender==1}">♂</th:block> 
 										<th:block th:if="${pet.gender==2}">♀</th:block>
-									</li>
-								</ul>
+								</p>
 
-								<a href="#" class="btn btn-primary my-1"
-									th:href="'#recList_' + ${pet.petId}"> 最近の記録を見る </a> <a
-									href="#" class="btn btn-primary my-1"
+								<a href="#" class="btn btn-primary my-1 mx-auto d-block"
+									th:href="'#recList_' + ${pet.petId}"> 最近の記録を見る </a> 
+								<a href="#" class="btn btn-primary my-1 mx-auto d-block"
 									th:href="@{/record_list/{petId}/{petName}(petId=${pet.petId}, petName=${pet.petName})}">
 									全ての記録を見る</a>
 
 								<div class="d-flex justify-content-between align-items-center">
-									<div class="btn-group">
+									<div class="btn-group mx-auto">
 										<form method="POST" th:action="@{/pet_edit}" name="petForm"
 											th:object="${petForm}">
 											<input type="hidden" name="petId" th:value="${pet.petId}">
@@ -152,15 +157,12 @@
 												class="btn btn-sm btn-outline-secondary mt-2 me-1">削除</button>
 										</form>
 									</div>
-
-									<!-- <small class="text-muted">PetId: [[${pet.petId}]]</small> -->
-
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+								</div><!-- end of d-flex -->
+							</div><!-- end of card body -->
+						</div><!-- end of shadow-sm -->
+					</div><!-- end of each pet -->
+				</div><!-- end of row -->
+			</div><!-- end of container -->
 		</section>
 
 		<!-- ////////////////成長記録一覧表示/////////////// -->

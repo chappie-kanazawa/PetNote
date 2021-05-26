@@ -1,8 +1,10 @@
 package com.example.demo.entity;
 
+import java.text.Collator;
 import java.util.List;
+import java.util.Locale;
 
-public class Pet {
+public class Pet implements Comparable<Pet> {
 	private int petId;
 	private String petName;
 	private String kind;
@@ -11,6 +13,13 @@ public class Pet {
 	private int userId;
 	private List<Record> recList;
 	
+	//Listにする際の自然順序付けを日本語昇順に設定
+    public int compareTo(Pet pet) {
+        Collator japanCollation = Collator.getInstance( Locale.JAPANESE );
+        int temp = 0;
+        temp = japanCollation.compare(this.getPetName(), pet.getPetName());
+        return temp;
+    }
 
 	public int getPetId() {
 		return petId;

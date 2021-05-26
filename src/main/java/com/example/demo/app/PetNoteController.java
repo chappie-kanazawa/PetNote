@@ -9,6 +9,7 @@ import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -151,11 +152,15 @@ public class PetNoteController {
 	    //petのリストを取得する
 	    List<Pet> petList = petService.findByUserId(account.getUserId());
 	    
+	    //ペット一覧をペット名昇順にする設定。登録準の方が分かりやすいと思うのででコメントアウトしておく
+	    //Collections.sort(petList);
+	    
 	    //成長記録を各petのrecListに代入
 	    List<Record> recList = new ArrayList<Record>();
 	    for ( Pet pet: petList ) {
 	    	int petId = pet.getPetId();
 	    	recList = recordService.findByPetId(petId);
+	    	Collections.sort(recList);
 	    	pet.setRecList(recList);
 	    }
 	    

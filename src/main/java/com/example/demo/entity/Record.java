@@ -1,14 +1,26 @@
 package com.example.demo.entity;
 
 import java.time.LocalDateTime;
+import java.lang.Comparable;
 
-public class Record {
+public class Record implements Comparable<Record>{
 	private int recId;
 	private String comment;
 	private String recPic;
     private LocalDateTime recDate;
     private int petId;
     private String petName;
+    
+    //Listにする際の自然順序付けを日付降順に設定
+    public int compareTo(Record record) {
+    	if( this.recDate.isAfter(record.recDate) ) {
+    		return -1;
+    	}
+    	if( this.recDate.isBefore(record.recDate) ) {
+    		return 1;
+    	} 
+    	return 0;
+    }
     
 	public int getRecId() {
 		return recId;
