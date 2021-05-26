@@ -1,9 +1,20 @@
 package com.example.demo.entity;
 
 import java.time.LocalDateTime;
-import java.lang.Comparable;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+//@Data // Lombok で getter setter など便利なメソッドを自動生成
+@Entity // JPA エンティティとして扱う
+@Table(name="record")
 public class Record implements Comparable<Record>{
+	
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int recId;
 	private String comment;
 	private String recPic;

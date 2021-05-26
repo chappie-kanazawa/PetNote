@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.example.demo.entity.Record;
 
-public interface RecordService {
+public interface RecordService  {
 	
 	List<Record> findAll();
 

@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:test
+    url: jdbc:h2:mem:testdb #;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false;AUTOCOMMIT=OFF;TRACE_LEVEL_SYSTEM_OUT=2
     driverClassName: org.h2.Driver
     username: sa
     password:
@@ -12,3 +12,11 @@ spring:
       max-file-size: 30MB
       max-request-size: 30MB
 
+## Spring Framework と Hibernate ORM 等のログを出力するように指定
+#logging.level.org.hibernate.SQL=DEBUG
+#logging.level.org.hibernate.type.descriptor.sql=TRACE
+#logging.level.org.springframework.orm.jpa=DEBUG
+#logging.level.com.example=DEBUG
+#
+## Open EntityManager in View パターンを使わない
+#spring.jpa.open-in-view=false
