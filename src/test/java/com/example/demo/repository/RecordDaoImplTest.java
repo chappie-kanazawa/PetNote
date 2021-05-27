@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.time.LocalDateTime;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import com.example.demo.entity.Record;
 
-import java.time.LocalDateTime;
+import lombok.var;
 
 @SpringJUnitConfig
 @SpringBootTest
@@ -35,7 +37,7 @@ class RecordDaoImplTest {
         assertEquals(6, list.size());
 
         // 2件目のレコードの取得(ORDER BYが正しく反映されているか)
-        var record2 = list.get(1);
+        var record2 = list.get(2);
         assertNotNull(record2);
         
 
@@ -45,7 +47,7 @@ class RecordDaoImplTest {
         assertEquals(LocalDateTime.of(2021, 03, 13, 15, 00, 00), record2.getRecDate());
         assertEquals(3, record2.getPetId());
         
-        var record3 = list.get(2);
+        var record3 = list.get(3);
         assertNotNull(record3);
 
         assertEquals("歌っているてすと", record3.getComment());
@@ -120,7 +122,7 @@ class RecordDaoImplTest {
     @DisplayName("insertのテスト(正常系)")
     void insert() {    	
         var rec = new Record();
-        rec.setRecId(0);					//何でゼロ？7じゃなくて？
+        //rec.setRecId(6);					//IDは自動割り振り
         rec.setComment("一緒に散歩したてすと4");
         rec.setRecPic("ggggtest4");
         rec.setRecDate(LocalDateTime.of(2007, 12, 03, 10, 15, 30));
@@ -243,7 +245,7 @@ class RecordDaoImplTest {
     @Test
     @DisplayName("deleteByUserIdのテスト(正常系)")
     void deleteByUserId1() {
-    	recordDao.deleteByUserId(1);
+    	recordDao.deleteByUserId(0);
 
         var list = recordDao.findAll();
 
@@ -251,7 +253,7 @@ class RecordDaoImplTest {
         assertEquals(2, list.size());
 
         // レコードが取得できないことを確認
-        assertThrows(EmptyResultDataAccessException.class, () -> recordDao.findByRecId(1));
+        assertThrows(EmptyResultDataAccessException.class, () -> recordDao.findByRecId(4));
     }
 
     @Test

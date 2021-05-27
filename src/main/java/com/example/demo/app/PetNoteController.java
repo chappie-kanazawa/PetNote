@@ -689,7 +689,7 @@ public class PetNoteController {
     		@Validated @ModelAttribute("petForm") PetForm petForm, 
     		Model model
     		) {
-
+    	
 		if(loginForm.getPass() != null) {
     	
 	    	List<Record> recList = recordService.findByPetId(petId);
@@ -882,7 +882,5 @@ public class PetNoteController {
 			
 		}
 	}
-
-
     
 }

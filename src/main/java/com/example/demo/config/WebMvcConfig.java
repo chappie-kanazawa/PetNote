@@ -9,12 +9,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
+	
+	//ページングの設定
     @Override
-    public void addArgumentResolvers(
-        List<HandlerMethodArgumentResolver> argumentResolvers) {
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+
         PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
-        // 1ページに表示する最大件数を10件に
-        resolver.setMaxPageSize(10);
+        // 1ページに表示する最大件数(5件)を設定する
+        resolver.setMaxPageSize(5);
         argumentResolvers.add(resolver);
     }
 	

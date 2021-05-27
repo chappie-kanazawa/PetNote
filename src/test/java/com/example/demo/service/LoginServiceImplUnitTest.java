@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 // Nakano to Junit5
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -15,6 +15,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.example.demo.entity.Account;
 import com.example.demo.entity.Login;
 import com.example.demo.repository.AccountDao;
+
+import lombok.var;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("LoginServiceImplの単体テスト")

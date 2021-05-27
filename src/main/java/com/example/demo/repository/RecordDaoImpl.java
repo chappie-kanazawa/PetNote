@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -20,7 +18,7 @@ public class RecordDaoImpl implements RecordDao {
 	public RecordDaoImpl(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
-	
+
 	@Override
 	public List<Record> findAll() {
 
@@ -46,7 +44,7 @@ public class RecordDaoImpl implements RecordDao {
 		}
 		return list;
 	}
-	
+
 	//1件の成長記録を見つけてくる
 	@Override
 	public Record findByRecId(int recId) {
@@ -54,7 +52,7 @@ public class RecordDaoImpl implements RecordDao {
 		String sql = "SELECT rec_id, comment, rec_pic, rec_date, pet_id "
 				+ "FROM record "
 				+ "WHERE rec_id = ?";
-		
+
 		Map<String, Object> result = jdbcTemplate.queryForMap(sql, recId);
 
 		Record record = new Record();
@@ -63,7 +61,7 @@ public class RecordDaoImpl implements RecordDao {
 		record.setRecPic((String)result.get("rec_pic"));
 		record.setRecDate(((Timestamp) result.get("rec_date")).toLocalDateTime());
 		record.setPetId((int)result.get("pet_id"));
-		
+
 		return record;
 	}
 
@@ -94,7 +92,7 @@ public class RecordDaoImpl implements RecordDao {
 		}
 		return list;
 	}
-	
+
 	//あるユーザーの全記録を見つけてくる
 	@Override
 	public List<Record> findByUserId(int userId) {
@@ -127,14 +125,14 @@ public class RecordDaoImpl implements RecordDao {
 		return list;
 	}
 
-	
+
 	//1件の成長記録を追加
 	@Override
 	public void insert(Record record) {
 		jdbcTemplate.update("INSERT INTO record(comment, rec_pic, rec_date, pet_id) VALUES(?, ?, ?, ?)",
 				record.getComment(), record.getRecPic(), record.getRecDate(), record.getPetId());
 	}
-	
+
 	//1件の成長記録を更新
 	@Override
 	public int update(Record record) {
@@ -155,10 +153,10 @@ public class RecordDaoImpl implements RecordDao {
 		String sql = "DELETE "
 				+ "FROM record "
 				+ "WHERE pet_id = ?";
-		
+
 		return jdbcTemplate.update(sql, petId);
 	}
-	
+
 	//あるユーザーの成長記録を削除
 	@Override
 	public int deleteByUserId(int userId) {
@@ -170,13 +168,8 @@ public class RecordDaoImpl implements RecordDao {
 						+ "FROM pet "
 						+ "WHERE pet.user_id = ? "
 					+ ")";
-		
+
 		return jdbcTemplate.update(sql, userId);
 	}
-	
-//	@Override
-//	public Page<Record> findAllWithPaging(Pageable pageable){
-//			return null;
-//	}
-	
+
 }

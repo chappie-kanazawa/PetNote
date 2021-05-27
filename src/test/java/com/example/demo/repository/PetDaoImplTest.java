@@ -1,6 +1,8 @@
 package com.example.demo.repository;
 
-import com.example.demo.entity.Pet;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,7 +13,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-import static org.junit.jupiter.api.Assertions.*;
+import com.example.demo.entity.Pet;
+
+import lombok.var;
 
 @SpringJUnitConfig
 @SpringBootTest
@@ -39,7 +43,7 @@ class PetDaoImplTest {
         assertEquals("インコtest", pet2.getKind());
         assertEquals(2, pet2.getGender());
         assertEquals("aaaatest", pet2.getPetIcon());
-        assertEquals(2, pet2.getUserId());
+        assertEquals(1, pet2.getUserId());
 
         var account3 = list.get(2);
         assertNotNull(account3);
@@ -51,7 +55,7 @@ class PetDaoImplTest {
     @Test
     @DisplayName("findByPetIdのテスト(正常系)")
     void findByPetId1() {
-        var pet1 = petDao.findByPetId(1);
+        var pet1 = petDao.findByPetId(0);
 
         // レコードの存在チェック
         assertNotNull(pet1);
@@ -61,7 +65,7 @@ class PetDaoImplTest {
         assertEquals("犬test", pet1.getKind());
         assertEquals(1, pet1.getGender());
         assertEquals("zzzztest", pet1.getPetIcon());
-        assertEquals(1, pet1.getUserId());
+        assertEquals(0, pet1.getUserId());
     }
 
     @Test
@@ -74,7 +78,7 @@ class PetDaoImplTest {
     @Test
     @DisplayName("findByUserId(正常系)のテスト")
     void findByUserId1() {
-        var list = petDao.findByUserId(2);
+        var list = petDao.findByUserId(1);
         // 件数のチェック
         assertEquals(1, list.size());
 
@@ -87,14 +91,14 @@ class PetDaoImplTest {
         assertEquals("インコtest", pet2.getKind());
         assertEquals(2, pet2.getGender());
         assertEquals("aaaatest", pet2.getPetIcon());
-        assertEquals(2, pet2.getUserId());
+        assertEquals(1, pet2.getUserId());
 
     }
     
     @Test
     @DisplayName("findByUserIdAndKind(正常系)のテスト")
     void findByUserIdAndKind1() {
-        var list = petDao.findByUserIdAndKind(1, "犬test");
+        var list = petDao.findByUserIdAndKind(0, "犬test");
         // 件数のチェック
         assertEquals(2, list.size());
 
@@ -107,7 +111,7 @@ class PetDaoImplTest {
         assertEquals("犬test", pet3.getKind());
         assertEquals(1, pet3.getGender());
         assertEquals("zzzztest", pet3.getPetIcon());
-        assertEquals(1, pet3.getUserId());
+        assertEquals(0, pet3.getUserId());
 
     }
     
@@ -213,7 +217,7 @@ class PetDaoImplTest {
     @Test
     @DisplayName("deleteByUserIdのテスト(正常系)")
     void deleteByUserId1() {
-        petDao.deleteByUserId(2);
+        petDao.deleteByUserId(1);
 
         var list = petDao.findAll();
 
@@ -221,7 +225,7 @@ class PetDaoImplTest {
         assertEquals(3, list.size());
 
         // レコードが取得できないことを確認
-        assertThrows(EmptyResultDataAccessException.class, () -> petDao.findByPetId(2));
+        assertThrows(EmptyResultDataAccessException.class, () -> petDao.findByPetId(1));
     }
 
     @Test

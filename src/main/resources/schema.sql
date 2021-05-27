@@ -26,6 +26,14 @@ CREATE TABLE record (
   PRIMARY KEY (rec_id)
 ) ;
 
+CREATE TABLE players (
+  id int(5) NOT NULL,
+  name varchar(140),
+  number int(5), 
+  position varchar(140),
+  PRIMARY KEY (id)
+);
+
 /*
 CREATE TABLE picture (
   pic_id SERIAL PRIMARY KEY,
@@ -47,3 +55,6 @@ CREATE TABLE p_a_relation (
   PRIMARY KEY (pet_id)
 );
 */
+
+
+

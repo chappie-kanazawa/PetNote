@@ -1,7 +1,11 @@
 package com.example.demo.service;
 
-import static org.junit.jupiter.api.Assertions.*; // Nakano to Junit5
-import static org.mockito.Mockito.*;
+// Nakano to Junit5
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;

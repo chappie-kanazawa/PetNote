@@ -13,7 +13,7 @@
 			<div class="container" th:object=${petForm}>
 				<div class="mt-4">
 
-					<h4 class="fw-light mb-2" th:text="*{petName} + ちゃんの成長記録一覧"
+					<h4 class="fw-light pt-3" th:text="*{petName} + ちゃんの成長記録一覧"
 						th:id="'recList_' + *{petId}">ここにメッセージを表示</h4>
 
 					<p th:if="${#lists.isEmpty(petForm.recList)}">まだ成長記録は登録されていません。</p>

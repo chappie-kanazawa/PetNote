@@ -37,7 +37,7 @@ public class AccountServiceImpl implements AccountService {
 	public void registerAccount(Account account) {
 		
 		//新規ユーザーのユーザー名が既存ユーザー名と重複していないかチェック
-		var registerName = account.getUserName();
+		String registerName = account.getUserName();
 		
 		//Accountを登録　userNameが重複していれば例外発生
 		if(isExist(registerName)) {

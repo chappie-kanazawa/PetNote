@@ -99,4 +99,5 @@ public class RecordServiceImpl implements RecordService {
 			throw new RecordEditErrorException("削除する成長記録が存在しません");
 		} 
 	}
+	
 }

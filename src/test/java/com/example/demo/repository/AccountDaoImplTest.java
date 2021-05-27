@@ -1,9 +1,11 @@
 package com.example.demo.repository;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.Optional;
 
-import com.example.demo.entity.Account;
-import com.example.demo.entity.Login;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +15,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-import static org.junit.jupiter.api.Assertions.*;
+import com.example.demo.entity.Account;
+import com.example.demo.entity.Login;
+
+import lombok.var;
 
 @SpringJUnitConfig
 @SpringBootTest
@@ -52,7 +57,7 @@ class AccountDaoImplTest {
     @Test
     @DisplayName("findByUserIdのテスト(正常系)")
     void findByUserId1() {
-        var account1 = accountDao.findByUserId(1);
+        var account1 = accountDao.findByUserId(0);
 
         // レコードの存在チェック
         assertNotNull(account1);
@@ -82,7 +87,7 @@ class AccountDaoImplTest {
         Account account1 = accountOpt1.orElse(null);
 
         // 各カラムの値が正しくセットされているか
-        assertEquals(1, account1.getUserId());        
+        assertEquals(0, account1.getUserId());        
         assertEquals("tarotest", account1.getUserName());
         assertEquals("1111test", account1.getPass());
         assertEquals("xxxxtest", account1.getIcon());
@@ -162,7 +167,7 @@ class AccountDaoImplTest {
     @DisplayName("updateのテスト(正常系)")
     void update1() {
         var account = new Account();
-        account.setUserId(2);
+        account.setUserId(1);
         account.setUserName("hanakotestx");
         account.setPass("2222testx");
         account.setIcon("yyyytestx");
@@ -172,7 +177,7 @@ class AccountDaoImplTest {
 
         assertEquals(1, updateCount);
 
-        var account2 = accountDao.findByUserId(2);
+        var account2 = accountDao.findByUserId(1);
 
         // レコードの存在チェック
         assertNotNull(account2);

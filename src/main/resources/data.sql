@@ -1,5 +1,3 @@
-
-
 INSERT INTO `account` VALUES
 (0, 'taro',	 	'1111', '/images/account/1604203127727.jpg_20210421140128791.jpg', 	'よろしく'),
 (1, 'hanako',	'2222', '/images/account/IMG_20201108_191349547.jpg_20210421141746892.jpg', 	'はじめまして');
@@ -25,6 +23,19 @@ INSERT INTO `record` VALUES
 (9,'よく寝た',			'/images/rec/IMG_8765 (3).jpg_20210421115240881.jpg',	'2021-03-05 15:00:00', 0),
 (10,'一緒に散歩した',	'/images/rec/IMG_8765 (3).jpg_20210421115240881.jpg',	'2021-03-06 15:00:00', 0);
 
+
+INSERT INTO `players` VALUES
+(0, 'taro', 	100, 'center'),
+(1, 'jiro', 	200, 'right'),
+(2, 'saburo', 	300, 'left'),
+(3, 'shiro', 	400, 'south'),
+(4, 'goro', 	500, 'north'),
+(5, 'rokuro', 	600, 'east'),
+(6, 'shichiro',	700, 'west');
+
+
+
+
 /*
 INSERT INTO `r_p_relation` VALUES
 (1, 1),
@@ -41,3 +52,7 @@ INSERT INTO `p_a_relation` VALUES
 (4, 1);
 
 */
+
+
+
+
