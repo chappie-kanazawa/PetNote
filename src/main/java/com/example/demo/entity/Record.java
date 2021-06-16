@@ -2,17 +2,37 @@ package com.example.demo.entity;
 
 import java.time.LocalDateTime;
 
-//@Entity // JPA エンティティとして扱う
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import lombok.Data;
+
+@Entity // JPA エンティティとして扱う
+@Table(name = "players")
+@Data
 public class Record implements Comparable<Record>{
 	
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id // JPA にこの変数をオブジェクトの ID だと認識させる
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="rec_id")
 	private int recId;
     
+    @Column(name="comment")
 	private String comment;
+    
+    @Column(name="rec_pic")
 	private String recPic;
+    
+    @Column(name="rec_date")
     private LocalDateTime recDate;
+    
+    @Column(name="pet_id")
     private int petId;
+    
     private String petName;
     
     //Listにする際の自然順序付けを日付降順に設定

@@ -8,6 +8,7 @@ import javax.validation.constraints.Size;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import com.example.demo.entity.Pet;
@@ -35,6 +36,8 @@ public class LoginForm implements Serializable {
     private List<Pet> petList;
     
     private List<Record> recList;
+
+    private Page<Record> recListPage;
     
     public LoginForm() {}
 
@@ -45,7 +48,8 @@ public class LoginForm implements Serializable {
 			String icon,
 			String intro,
 			List<Pet> petList,
-			List<Record> recList
+			List<Record> recList,
+			Page<Record> recListPage
 			) {
 		this.userId = userId;
 		this.userName = userName;
@@ -54,6 +58,7 @@ public class LoginForm implements Serializable {
 		this.intro = intro;
 		this.petList = petList;
 		this.recList = recList;
+		this.recListPage = recListPage;
 	}
 
 	public int getUserId() {
@@ -108,6 +113,14 @@ public class LoginForm implements Serializable {
 		this.recList = recList;
 	}
 
+	public Page<Record> getRecListPage() {
+		return recListPage;
+	}
+
+	public void setRecListPage(Page<Record> recListPage) {
+		this.recListPage = recListPage;
+	}
+	
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}

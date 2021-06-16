@@ -3,17 +3,19 @@ package com.example.demo.service;
 import java.util.List;
 
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.Record;
-import com.example.demo.repository.RecordDao;
+import com.example.demo.repository.RecordRepository;
 
 @Service
 public class RecordServiceImpl implements RecordService {
 
-	private final RecordDao dao;
+	private final RecordRepository dao;
 
-	public RecordServiceImpl(RecordDao dao) {
+	public RecordServiceImpl(RecordRepository dao) {
 		this.dao = dao;
 	}
 	
@@ -99,5 +101,18 @@ public class RecordServiceImpl implements RecordService {
 			throw new RecordEditErrorException("削除する成長記録が存在しません");
 		} 
 	}
+	
+	//日付順にならべたpetIdに紐づくrecordをリストで取得
+	public Page<Record> findByPetIdByOrderByRecDate(int petId, Pageable pageable){
+		//あるユーザーのOptional<Record>全件を取得 idが無ければ例外発生　
+		try {
+			return dao.findByPetIdByOrderByRecDate(petId, pageable);
+		} catch (EmptyResultDataAccessException e) {
+			throw new RecordNotFoundException("指定された成長記録が存在しません");
+		}
+	}
+
+	
+	
 	
 }

@@ -20,14 +20,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 import com.example.demo.entity.Record;
-import com.example.demo.repository.RecordDao;
+import com.example.demo.repository.RecordRepository;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("RecordServiceUnitImplの単体テスト")
 class RecordServiceUnitTest {
 
 	@Mock // モック(stub)クラス ダミーオブジェクト
-	private RecordDao dao;
+	private RecordRepository dao;
 
 	@InjectMocks // テスト対象クラス モックを探す newする
 	private RecordServiceImpl recordServiceImpl;

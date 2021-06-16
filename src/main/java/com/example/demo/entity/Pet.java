@@ -4,6 +4,8 @@ import java.text.Collator;
 import java.util.List;
 import java.util.Locale;
 
+import org.springframework.data.domain.Page;
+
 public class Pet implements Comparable<Pet> {
 	private int petId;
 	private String petName;
@@ -12,6 +14,7 @@ public class Pet implements Comparable<Pet> {
 	private String petIcon;
 	private int userId;
 	private List<Record> recList;
+	private Page<Record> recListPage;
 	
 	//Listにする際の自然順序付けを日本語昇順に設定
     public int compareTo(Pet pet) {
@@ -62,6 +65,14 @@ public class Pet implements Comparable<Pet> {
 	}
 	public void setRecList(List<Record> recList) {
 		this.recList = recList;
+	}
+
+	public Page<Record> getRecListPage() {
+		return recListPage;
+	}
+
+	public void setRecListPage(Page<Record> recListPage) {
+		this.recListPage = recListPage;
 	}
 
 	

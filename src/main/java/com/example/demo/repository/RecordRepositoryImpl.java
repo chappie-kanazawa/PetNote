@@ -5,17 +5,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
 
 import com.example.demo.entity.Record;
 
-@Repository
-public class RecordDaoImpl implements RecordDao {
-
+public class RecordRepositoryImpl implements RecordRepositoryCustom{
+	
 	private final JdbcTemplate jdbcTemplate;
 
-	public RecordDaoImpl(JdbcTemplate jdbcTemplate) {
+	public RecordRepositoryImpl(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 
@@ -171,5 +172,38 @@ public class RecordDaoImpl implements RecordDao {
 
 		return jdbcTemplate.update(sql, userId);
 	}
+	
+	//日付順にならべたpetIdに紐づくrecordをリストで取得
+	@Override
+	public Page<Record> findByPetIdByOrderByRecDate(int petId, Pageable pageable){
+		String sql = "SELECT rec_id, comment, rec_pic, rec_date, pet_id "
+				+ "FROM record "
+				+ "WHERE pet_id = ?"
+				+ "ORDER BY rec_date DESC";
+
+		//SQLとpetIdを渡し、記録一覧をMapのListで取得する
+		List<Map<String, Object>> resultList = jdbcTemplate.queryForList(sql, petId);
+
+		//return用の空のListを用意
+		List<Record> list = new ArrayList<>();
+
+		//二つのテーブルのデータをRecordにまとめる
+		for(Map<String, Object> result : resultList) {
+
+			Record record = new Record();
+			record.setRecId((int)result.get("rec_id"));
+			record.setComment((String)result.get("comment"));
+			record.setRecPic((String)result.get("rec_pic"));
+			record.setRecDate(((Timestamp) result.get("rec_date")).toLocalDateTime());
+			record.setPetId((int)result.get("pet_id"));
+
+			list.add(record);
+		}
+		
+		Page<Record> recListPage = new PageImpl<Record>(list, pageable, list.size());
+
+		return recListPage;	
+	}
+	
 
 }

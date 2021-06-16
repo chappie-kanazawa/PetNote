@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
@@ -23,36 +24,36 @@ import lombok.var;
 @SpringBootTest
 @ActiveProfiles("unit")
 @Sql
-class RecordDaoTest {
+class RecordRepositoryImplTest {
 
     @Autowired
-    private RecordRepository recordRepository;
+    private RecordRepositoryImpl recordRepository;
     
-//    @Test
-//    @DisplayName("findAllのテスト")
-//    void findAll() {
-//        var list = recordRepository.findAll();
-//
-//        // 件数のチェック
-//        assertEquals(6, list.size());
-//
-//        // 2件目のレコードの取得(ORDER BYが正しく反映されているか)
-//        var record2 = list.get(2);
-//        assertNotNull(record2);
-//        
-//
-//        // 各カラムの値が正しくセットされているか
-//        assertEquals("よく食べたてすと", record2.getComment());
-//        assertEquals("ddddtest", record2.getRecPic());
-//        assertEquals(LocalDateTime.of(2021, 03, 13, 15, 00, 00), record2.getRecDate());
-//        assertEquals(3, record2.getPetId());
-//        
-//        var record3 = list.get(3);
-//        assertNotNull(record3);
-//
-//        assertEquals("歌っているてすと", record3.getComment());
-//
-//    }
+    @Test
+    @DisplayName("findAllのテスト")
+    void findAll() {
+        var list = recordRepository.findAll();
+
+        // 件数のチェック
+        assertEquals(6, list.size());
+
+        // 2件目のレコードの取得(ORDER BYが正しく反映されているか)
+        var record2 = list.get(2);
+        assertNotNull(record2);
+        
+
+        // 各カラムの値が正しくセットされているか
+        assertEquals("よく食べたてすと", record2.getComment());
+        assertEquals("ddddtest", record2.getRecPic());
+        assertEquals(LocalDateTime.of(2021, 03, 13, 15, 00, 00), record2.getRecDate());
+        assertEquals(3, record2.getPetId());
+        
+        var record3 = list.get(3);
+        assertNotNull(record3);
+
+        assertEquals("歌っているてすと", record3.getComment());
+
+    }
     
     @Test
     @DisplayName("findByRecIdのテスト(正常系)")
@@ -96,25 +97,25 @@ class RecordDaoTest {
 
     }
     
-//    @Test
-//    @DisplayName("findByUserId正常系)のテスト")
-//    void findByUserId1() {
-//        var list = recordRepository.findByUserId(1);
-//        // 件数のチェック
-//        assertEquals(2, list.size());
-//
-//        // 1件目のレコードの取得(ORDER BYが正しく反映されているか)
-//        var rec2 = list.get(0);
-//        assertNotNull(rec2);
-//
-//        // 各カラムの値が正しくセットされているか
-//        assertEquals(1, rec2.getRecId());
-//        assertEquals("今日も元気てすと", rec2.getComment());
-//        assertEquals("cccctest", rec2.getRecPic());
-//        assertEquals(LocalDateTime.of(2021, 03, 12, 15, 00, 00), rec2.getRecDate());
-//        assertEquals(1, rec2.getPetId());
-//
-//    }
+    @Test
+    @DisplayName("findByUserId正常系)のテスト")
+    void findByUserId1() {
+        var list = recordRepository.findByUserId(1);
+        // 件数のチェック
+        assertEquals(2, list.size());
+
+        // 1件目のレコードの取得(ORDER BYが正しく反映されているか)
+        var rec2 = list.get(0);
+        assertNotNull(rec2);
+
+        // 各カラムの値が正しくセットされているか
+        assertEquals(1, rec2.getRecId());
+        assertEquals("今日も元気てすと", rec2.getComment());
+        assertEquals("cccctest", rec2.getRecPic());
+        assertEquals(LocalDateTime.of(2021, 03, 12, 15, 00, 00), rec2.getRecDate());
+        assertEquals(1, rec2.getPetId());
+
+    }
     
     
     
@@ -242,31 +243,49 @@ class RecordDaoTest {
 
     }
     
+    @Test
+    @DisplayName("deleteByUserIdのテスト(正常系)")
+    void deleteByUserId1() {
+    	recordRepository.deleteByUserId(0);
+
+        var list = recordRepository.findAll();
+
+        // 件数のチェック(対象外のレコードまで消えていないかチェック)
+        assertEquals(2, list.size());
+
+        // レコードが取得できないことを確認
+        assertThrows(EmptyResultDataAccessException.class, () -> recordRepository.findByRecId(4));
+    }
+
+    @Test
+    @DisplayName("deleteByUserIdのテスト(更新対象がない場合)")
+    void deleteByUserId2() {
+        var deleteCount = recordRepository.deleteByUserId(10);
+        assertEquals(0, deleteCount);
+
+        var list = recordRepository.findAll();
+
+        // 件数のチェック(全てのレコードが消えていない事を確認)
+        assertEquals(6, list.size());
+
+    }
+    
 //    @Test
-//    @DisplayName("deleteByUserIdのテスト(正常系)")
-//    void deleteByUserId1() {
-//    	recordRepository.deleteByUserId(0);
+//    @DisplayName("findByPetId(正常系)のテスト")
+//    void findByPetId2() {
+//        Page<Record> list = recordRepository.findByPetIdByOrderByRecDate(2, );
+//        // 件数のチェック
+//        assertEquals(2, list.getSize());
+//        // 1件目のレコードの取得(ORDER BYが正しく反映されているか)
+//        var rec2 = list.get(1);
+//        assertNotNull(rec2);
 //
-//        var list = recordRepository.findAll();
-//
-//        // 件数のチェック(対象外のレコードまで消えていないかチェック)
-//        assertEquals(2, list.size());
-//
-//        // レコードが取得できないことを確認
-//        assertThrows(EmptyResultDataAccessException.class, () -> recordRepository.findByRecId(4));
-//    }
-//
-//    @Test
-//    @DisplayName("deleteByUserIdのテスト(更新対象がない場合)")
-//    void deleteByUserId2() {
-//        var deleteCount = recordRepository.deleteByUserId(10);
-//        assertEquals(0, deleteCount);
-//
-//        var list = recordRepository.findAll();
-//
-//        // 件数のチェック(全てのレコードが消えていない事を確認)
-//        assertEquals(6, list.size());
-//
+//        // 各カラムの値が正しくセットされているか
+//        assertEquals(3, rec2.getRecId());
+//        assertEquals("歌っているてすと", rec2.getComment());
+//        assertEquals("eeeetest", rec2.getRecPic());
+//        assertEquals(LocalDateTime.of(2021, 03, 14, 15, 00, 00), rec2.getRecDate());
+//        assertEquals(2, rec2.getPetId());
 //    }
     
 }

@@ -2,6 +2,9 @@ package com.example.demo.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.example.demo.entity.Record;
 
 public interface RecordService  {
@@ -23,5 +26,7 @@ public interface RecordService  {
 	void deleteByPetId(int petId);
 	
 	void deleteByUserId(int userId);
+	
+	Page<Record> findByPetIdByOrderByRecDate(int petId, Pageable pageable);
 	
 }

@@ -15,6 +15,11 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,6 +28,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
@@ -686,7 +692,14 @@ public class PetNoteController {
     		LoginForm loginForm,
     		@PathVariable("petId") int petId,
     		@PathVariable("petName") String petName,
-    		@Validated @ModelAttribute("petForm") PetForm petForm, 
+    		PetForm petForm, 
+    		//@RequestParam(value = "petId", defaultValue = "1") int petId,
+//            @PageableDefault(
+//                    page = 0,
+//                    size = 5,
+//                    sort = {"redId"},
+//                    direction = Sort.Direction.DESC
+//                    ) Pageable pageable,
     		Model model
     		) {
     	
@@ -698,6 +711,11 @@ public class PetNoteController {
 	    	petForm.setPetId(petId);
 	    	petForm.setPetName(petName);
 	    	model.addAttribute("petForm", petForm);
+	    	
+//	    	//成長記録をpage型に変換
+//	    	Page<Record> recListPage = new PageImpl<Record>(recList, pageable, recList.size());
+//	        model.addAttribute("page", recListPage);
+//	        model.addAttribute("petId", petId);
 	    
 			model.addAttribute("menuView", true);
 	    	model.addAttribute("title", "成長記録一覧");
@@ -882,5 +900,40 @@ public class PetNoteController {
 			
 		}
 	}
+	
+	/////////////////////
+	//　成長記録表示
+	/////////////////////
+    @RequestMapping(value="/record_list_test")
+    public String viewRecordList(
+    		LoginForm loginForm,
+    		PetForm petForm, 
+    		@RequestParam(value = "petId", defaultValue = "1") int petId,
+            @PageableDefault(
+                    page = 0,
+                    size = 5,
+                    sort = {"redId"},
+                    direction = Sort.Direction.DESC
+                    ) Pageable pageable,
+    		Model model
+    		) {
+    	
+	    	List<Record> recList = recordService.findByPetId(petId);
+	    	
+	    	petForm.setRecList(recList);
+	    	petForm.setPetId(petId);
+	    	petForm.setPetName(petService.findByPetId(petId).getPetName());
+	    	model.addAttribute("petForm", petForm);
+	    	
+	    	//成長記録をpage型に変換
+	    	Page<Record> recListPage = new PageImpl<Record>(recList, pageable, recList.size());
+	        model.addAttribute("page", recListPage);
+	        model.addAttribute("petId", petId);
+	    
+			model.addAttribute("menuView", true);
+	    	model.addAttribute("title", "成長記録一覧");
+	    	return "record_list";
+
+    }
     
 }

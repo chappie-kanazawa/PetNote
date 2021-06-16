@@ -2,12 +2,15 @@ package com.example.demo.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.example.demo.entity.Record;
 
-public interface RecordDao {
+public interface RecordRepositoryCustom {
 	
 	List<Record> findAll();
-
+	
 	Record findByRecId(int recId);
 	
 	List<Record> findByPetId(int petId);
@@ -23,5 +26,7 @@ public interface RecordDao {
 	int deleteByPetId(int petId);
 	
 	int deleteByUserId(int userId);
+
+	Page<Record> findByPetIdByOrderByRecDate(int petId, Pageable pageable);
 
 }
