@@ -1,9 +1,27 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath  'org.springframework.boot:spring-boot-gradle-plugin:1.2.3.RELEASE'
+    }
+}
+
 plugins {
     id 'org.springframework.boot' version '2.3.5.RELEASE'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'java'
     id 'eclipse'
 	id 'idea'
+}
+
+jar {
+  baseName = 'spring-boot-sample'
+  version =  '0.1.0'
+}
+
+repositories {
+  mavenCentral()
 }
 
 group = 'com.example'
@@ -25,9 +43,6 @@ sourceSets {
     main { compileClasspath += configurations.provided }
 }
 
-repositories {
-	mavenCentral()
-}
 
 dependencies {
 	// Spring
@@ -40,10 +55,7 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.data:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.data:spring-boot-starter-security'
-
-
+    //implementation 'org.springframework.data:spring-boot-starter-security'
 
 	// H2 Database    
     runtimeOnly 'com.h2database:h2'
@@ -51,15 +63,17 @@ dependencies {
     // for lombok
 	provided 'org.projectlombok:lombok'
   	compileOnly 'org.projectlombok:lombok'
-  	annotationProcessor 'org.projectlombok:lombok'
+  	annotationProcessor 'org.projectlombok:lombok:1.18.12'
+  	
   	    
     //テスト関係
-    //testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.5.2'
     
+    
     // JUnit 5を使うための依存性
-    //testCompile("org.junit.jupiter:junit-jupiter-api")
-    //testRuntime("org.junit.jupiter:junit-jupiter-engine")
+    testCompile("org.junit.jupiter:junit-jupiter-api")
+    testRuntime("org.junit.jupiter:junit-jupiter-engine")
 
     // Mockitoのライブラリが含まれている
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
@@ -67,20 +81,18 @@ dependencies {
     }
     testImplementation('org.mockito:mockito-core')
     testImplementation('org.mockito:mockito-junit-jupiter')
-    
-    
-//    // Spring Security 
-//	providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
-//	compile 'javax.servlet:jstl:1.2'
-//	compile 'org.springframework.security:spring-security-web:4.2.1.RELEASE'
-//	compile 'org.springframework.security:spring-security-config:4.2.1.RELEASE'
 
+	
 }
-
-//war.baseName = 'spring-security-sample'
-
-//mainClassName = 'sample.lombok.Main'
 
 test {
     useJUnitPlatform()
+}
+
+
+defaultTasks "clean", "build"
+
+wrapper {
+  gradleVersion = '6.7'
+  //distributionUrl = distributionUrl.replace("bin", "all")
 }
